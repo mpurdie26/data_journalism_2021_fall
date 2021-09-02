@@ -1,7 +1,7 @@
 ---
 title: "pre_lab_01.Rmd"
-author: ""
-date: ""
+author: "Michael Purdie"
+date: "09-02-2021"
 output: html_document
 ---
 
@@ -108,7 +108,7 @@ In the space below, write the data type for the "name" column and the "amount" c
 ### Task 4: Examine data "head"
 **Task** Run the following codeblock to use head() to examine the first six rows of data. Explore the data by clicking the black arrow on the right side of the output table, allowing you to examine additional columns.
 ```{r}
-head(ppp_maryland_loans)
+head(ppp_maryland_loans,10)
 ```
 In the space below, write the name of the business from the first row of the "name" column.
 **Answer**
