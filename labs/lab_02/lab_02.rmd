@@ -93,6 +93,7 @@ west_virginia_ppp %>%
 
 ```{r}
 west_virginia_ppp %>%
+  filter(date_approved > '2020-12-31') %>%
   mutate(Month = floor_date(date_approved, "month")) %>% 
   group_by(Month) %>%
   summarise(total = n()) %>%
