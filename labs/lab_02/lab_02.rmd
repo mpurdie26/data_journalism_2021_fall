@@ -68,7 +68,7 @@ west_virginia_ppp %>%
 ```
 
 **Q2** Which servicing lenders have the most loans with undisbursed amounts greater than 0?
-**A2** Harvest Small Business Finance, LLC has the most loans with undisburded amounts gretaer than 0 at 139 loans.
+**A2** Harvest Small Business Finance, LLC has the most loans with undisbursed amounts greater than 0 at 139 loans.
 
 ```{r}
 west_virginia_ppp %>%
