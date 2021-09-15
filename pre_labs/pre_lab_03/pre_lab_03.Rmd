@@ -55,10 +55,10 @@ problems(ppp_maryland_loans)
 
 ### Task 4: Reload data
 **Task** Run the following codeblock to reload the data, using every row to set the data types. Does it show any parsing errors when you run? Answer below
-**Answer** Everytime I try doing this my entire computer shuts down so I don't know.
+**Answer** I got rid of ", guess_max=195865" because every time I tried my entire computer shut down, but with that I got no errors.
 
 ```{r}
-ppp_maryland_loans <- read_csv("ppp_loans_md.csv.zip", guess_max=195865)
+ppp_maryland_loans <- read_csv("ppp_loans_md.csv.zip")
 ```
 
 ### Task 5: Examine the data with glimpse
@@ -159,7 +159,7 @@ ppp_maryland_loans %>%
 
 ### Task 14: Check for suspicious outliers
 **Task** Run the following codeblock to find the largest and smallest loans in the data, by using summarise() without grouping. How much is the largest loan for? How much is the smallest loan for? Are either of these suspicious to you? Why or why not? Answer below.
-**Answer** $10 million is not suspiscious as that is the max loan amount, but $6 is definitely interesting. The chapter explains that this is consistent in all the columns, but it is unusual and could be cleared up with a call.
+**Answer** $10 million is not suspiscious as that is the max loan amount, but $6 is definitely interesting because it is such a small amount of money. I call could clear this up.
 ```{r}
 
 ppp_maryland_loans %>%
@@ -170,7 +170,7 @@ ppp_maryland_loans %>%
 
 ### Task 15: Look at smallest loans
 **Task** Run the following codeblock to examine all loans under $100. How many are there? Answer below.
-**Answer**
+**Answer** 2
 ```{r}
 
 ppp_maryland_loans %>%
@@ -179,7 +179,7 @@ ppp_maryland_loans %>%
 
 ### Task 16: Look for internal consistency
 **Task** Run the following codeblock to examine all loans under $100 and look at whether the various fields with amounts align. Do they? Answer below.
-**Answer**
+**Answer** Yes
 
 ```{r}
 
