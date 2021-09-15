@@ -55,7 +55,7 @@ problems(ppp_maryland_loans)
 
 ### Task 4: Reload data
 **Task** Run the following codeblock to reload the data, using every row to set the data types. Does it show any parsing errors when you run? Answer below
-**Answer** 
+**Answer** Everytime I try doing this my entire computer shuts down so I don't know.
 
 ```{r}
 ppp_maryland_loans <- read_csv("ppp_loans_md.csv.zip", guess_max=195865)
@@ -63,7 +63,7 @@ ppp_maryland_loans <- read_csv("ppp_loans_md.csv.zip", guess_max=195865)
 
 ### Task 5: Examine the data with glimpse
 **Task** Run the following codeblock to glimpse the data.  What data type is the "amount" field?  What data type is the "name" field? What data type is the id column? Answer below.
-**Answer**
+**Answer**Amount is <dbl>, name is <chr>, and id is <dbl>
 ```{r}
 glimpse(ppp_maryland_loans)
 ```
