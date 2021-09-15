@@ -79,7 +79,7 @@ glimpse(ppp_maryland_loans)
 
 ### Task 7: Examine the franchise column for missing values.
 **Task** Run the following codeblock to group by franchise_name, count the numer of loans, then sort from highest to lowest on count. How many loans are there where franchise_name is NA? How many loans are there where the franchise_name is "Subway"? Answer below.
-**Answer**:
+**Answer**: 195,865 for NA, 0 for Subway since there is only one row
 
 ```{r}
 
@@ -92,7 +92,7 @@ ppp_maryland_loans %>%
 ```
 ### Task 8: Examine the forgiveness_amount column for missing values.
 **Task** Run the following codeblock to group by forgiveness_amount, count the numer of loans, then sort from highest to lowest on count. How many loans are there where forgiveness_amount is NA? Answer below.
-**Answer**:
+**Answer**: 135,073
 
 ```{r}
 
@@ -106,7 +106,7 @@ ppp_maryland_loans %>%
 
 ### Task 9: Examine the forgiveness_date column for missing values.
 **Task** Run the following codeblock to group by forgiveness_date, count the numer of loans, then sort from highest to lowest on count and filter to only show NA values. How many loans are there where forgiveness_date is NA? Is it the same as the number for forgiveness_amount? Answer below.
-**Answer**:
+**Answer**: 135,073, and yes
 
 ```{r}
 
@@ -120,7 +120,7 @@ ppp_maryland_loans %>%
 ```
 ### Task 10: Examine forgiveness_date and forgiveness_amount together
 **Task** Run the following codeblock to group by forgiveness_date and forgiveness_amount, count the number of loans, then sort from highest to lowest on count and filter to only show NA values. How many loans are there where forgiveness_date and forgiveness_amount is NA? Is it the same as the number for forgiveness_amount and forgiveness_amount run separately in the codeblocks above? What can you conclude from Answer below.
-**Answer**:
+**Answer**: 135,073, which is the same as the number for forgiveness_amount and forgiveness_amount when run separately. NA represents loans that haven't been forgiven, possibly
 ```{r}
 ppp_maryland_loans %>%
   group_by(forgiveness_amount, forgiveness_date) %>%
@@ -146,7 +146,7 @@ library(lubridate)
 
 ### Task 13: Look for date gaps in data
 **Task** Run the following codeblock to create a new column called "month_year_approved" that extracts the month and year from the "date_approved" column.  Group by the new "month_year_approved" column, count, and sort by "month_year_approved". How many loans are there in the data for October 2020? Answer below.
-**Answer**
+**Answer** 0
 ```{r}
 ppp_maryland_loans %>%
   mutate(month_year_approved = floor_date(date_approved, "month")) %>%
@@ -159,7 +159,7 @@ ppp_maryland_loans %>%
 
 ### Task 14: Check for suspicious outliers
 **Task** Run the following codeblock to find the largest and smallest loans in the data, by using summarise() without grouping. How much is the largest loan for? How much is the smallest loan for? Are either of these suspicious to you? Why or why not? Answer below.
-**Answer**
+**Answer** $10 million is not suspiscious as that is the max loan amount, but $6 is definitely interesting. The chapter explains that this is consistent in all the columns, but it is unusual and could be cleared up with a call.
 ```{r}
 
 ppp_maryland_loans %>%
