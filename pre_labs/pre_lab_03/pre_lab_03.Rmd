@@ -36,7 +36,7 @@ library(tidyverse)
 
 ### Task 2: Load data
 **Task** Load the PPP loan dataset by running the following code. We'll use the guess_max() function as an argument to use the first 10 rows to set the data type. What does the first line of the red Warning message that prints out when you load the data say? Answer below.
-**Answer**
+**Answer** "One or more parsing issues, see `problems()` for details"
 
 ```{r}
 ppp_maryland_loans <- read_csv("ppp_loans_md.csv.zip", guess_max=10)
@@ -45,7 +45,7 @@ ppp_maryland_loans <- read_csv("ppp_loans_md.csv.zip", guess_max=10)
 
 ### Task 3: Check for problems on load
 **Task** Check for problems that occurred when loading the ppp loan data for Maryland by running the following code.  How many problems were there, as shown by the number of rows in the output table showing errors? Answer below.
-**Answer**
+**Answer** 87,927
 
 ```{r}
 
@@ -55,7 +55,7 @@ problems(ppp_maryland_loans)
 
 ### Task 4: Reload data
 **Task** Run the following codeblock to reload the data, using every row to set the data types. Does it show any parsing errors when you run? Answer below
-**Answer**
+**Answer** 
 
 ```{r}
 ppp_maryland_loans <- read_csv("ppp_loans_md.csv.zip", guess_max=195865)
