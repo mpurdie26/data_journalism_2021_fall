@@ -206,7 +206,7 @@ library(janitor)
 
 ### Task 3: Load Arnold, Maryland demonstration data
 **Task** Run the following codeblock to load a demonstration slice of the data for Arnold, Maryland. How many rows are in this demonstration data set?
-**Answer**
+**Answer** 6 rows
 
 ```{r}
 arnold_md_loans <- read_rds("arnold_md_loans.rmd")
@@ -214,7 +214,7 @@ arnold_md_loans <- read_rds("arnold_md_loans.rmd")
 
 ### Task 4: Examine the data with glimpse
 **Task** Run the following codeblock to glimpse the data.  What data type is the "amount" field? Answer below.
-**Answer**
+**Answer** <chr>
 ```{r}
 glimpse(arnold_md_loans)
 ```
@@ -223,7 +223,7 @@ And let's examine the full data set.
 
 ### Task 5: Examine the data table
 **Task** Run the following codeblock to examine the data. Name three problems the book chapter says exist in this data set that could prevent us from answering questions?  Answer below
-**Answer**
+**Answer** The column headers are inconsistently styled, there’s a fully duplicated row, and the zip field mixes five digit ZIP codes and nine digit ZIP codes.
 
 ```{r}
 arnold_md_loans
@@ -231,7 +231,7 @@ arnold_md_loans
 
 ### Task 6: Use clean_names()
 **Task** Run the following codeblock to use the clean_names() function from janitor to standardize column names. How does the function change the name of the column "1_id"? Answer below.
-**Answer**
+**Answer** x1_id
 
 
 ```{r}
@@ -261,7 +261,7 @@ cleaned_arnold_md_loans
 
 ### Task 8: Try summarizing the amount column
 **Task** Run the following codeblock to attempt to add up the amount of all loans. What does the error say when you run this code? What do you think it means? Answer below.
-**Answer**
+**Answer** "Problem with `summarise()` column `total_amount`. ℹ `total_amount = sum(amount)`. x invalid 'type' (character) of argument," which means total_amount is a <chr> data type
 
 ```{r}
 # cleaning function
@@ -275,7 +275,7 @@ total_arnold_md_loans
 ```
 ### Task 9: Change data type for amount
 **Task** Run the following codeblock to attempt to change the datatype for the amount field to a number. What is the new data type (three letter code) for amount? Answer below.
-**Answer**
+**Answer** <dbl>
 
 ```{r}
 # cleaning function
@@ -291,7 +291,7 @@ cleaned_arnold_md_loans
 ```
 ### Task 10: Try again to summarize the amount column
 **Task** Run the following codeblock to add up the amount of all loans in this data.  What is the total? Answer below.
-**Answer**
+**Answer** 2,033,179
 ```{r}
 # cleaning function
 total_arnold_md_loans <- cleaned_arnold_md_loans %>%
@@ -305,7 +305,7 @@ total_arnold_md_loans
 
 ### Task 11: Check for duplicate rows
 **Task** Run the following codeblock to check for duplicate rows using get_dupes().  How many are there? What is the business name? Answer below.
-**Answer**
+**Answer** 1 duplicate for Stuart Jones LLC
 
 ```{r}
 cleaned_arnold_md_loans %>%
@@ -314,7 +314,7 @@ cleaned_arnold_md_loans %>%
 
 ### Task 12: Check for duplicate rows
 **Task** Run the following codeblock to use distinct() to get rid of duplicate rows. How many rows does the new dataframe have? Answer below.
-**Answer**
+**Answer** 5
 ```{r}
 # cleaning function
 cleaned_arnold_md_loans <- arnold_md_loans %>%
@@ -350,6 +350,7 @@ cleaned_arnold_md_loans
 
 ### Task 14: Clean up city field
 **Task** Run the following codeblock to use str_tot_title() to standarize capitalization in the "city" field. How many mispellings of Arnold remain after running this code? Answer below.
+**Answer** 2
 
 ```{r}
 # cleaning function
@@ -370,7 +371,7 @@ cleaned_arnold_md_loans
 
 ### Task 15: Clean up city field more with case_when()
 **Task** Run the following codeblock to use case_when() to fix misspellings of Arnold in the "city" field. How many mispellings of Arnold remain after running this code? Answer below.
-**Answer**
+**Answer** 1
 
 ```{r}
 # cleaning function
@@ -394,7 +395,7 @@ cleaned_arnold_md_loans
 
 ### Task 16: Clean up city field more with case_when()
 **Task** Run the following codeblock to use case_when() to fix misspellings of Arnold in the "city" field using both the exact match method and the str_detect() method. How many mispellings of Arnold remain after running this code? Answer below.
-**Answer**
+**Answer** 0
 ```{r}
 # cleaning function
 cleaned_arnold_md_loans <- arnold_md_loans %>%
