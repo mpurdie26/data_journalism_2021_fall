@@ -66,7 +66,7 @@ Q2: What is the name of the business that got the largest loan (by dollar value)
 * How much of that loan was forgiven?
 * Which number is bigger, the loan amount or the forgiveness amount? Can you explain the discrepancy?
 
-A2: The zipcode with the highest dollar amount in total loans is 25301. The business with the largest loan in the zipcode was "THE EYE AND EAR CLINIC OF CHARLESTON DBA CHARLESTON SURGICA" for $	1,520,007, and "NA" was forgiven. The loan amount is larger, since there is no forgiveness amount.
+A2: The zipcode with the highest dollar amount in total loans is 25301. The business with the largest loan in the zipcode was "JACKSON KELLY PLLC" for $5,068,472, and $5,126,618.64 was forgiven. The forgiven amount is larger than the loan amount, due to interest.
 
 ```{r}
 # Hint
@@ -80,6 +80,7 @@ top_five_wv_zip <- wv_ppp_loans %>%
   arrange(desc(total_amount_per_zip))
 # Second, use the top ZIP code to create a separate dataframe that shows the business with the biggest loan in that ZIP code.
 wv_ppp_loans %>%
+  mutate(zip = str_sub(zip, start=1L, end=5L)) %>%
   filter(zip == "25301") %>% 
   arrange(desc(amount))
 
@@ -112,6 +113,8 @@ A3:
 
 # Hint
 # First, create a dataframe that only has loans to those five companies
+wv_ppp_loans %>%
+  filter(str_detect())
 # Second, use that newly created dataframe to calculate total loan amount and percentage forgiven for those companies
 
 ```
