@@ -108,13 +108,18 @@ Some hints to help you answer this question:
 * This is a link to details on passage of the [CARES ACT](https://www.congress.gov/bill/116th-congress/house-bill/748). You can find a link to how the House voted by clicking on a link from [this page](https://www.congress.gov/bill/116th-congress/house-bill/748/actions).
 
 A3:
+%>%
+  filter(name == "DM Motors" | name == "Dutch Miller of Charleston" | name == "MFM Realty")
 
 ```{r}
 
 # Hint
 # First, create a dataframe that only has loans to those five companies
 wv_ppp_loans %>%
-  filter(str_detect())
+  mutate(name = str_to_title(name)) %>%
+  mutate(city = str_to_title(city)) %>%
+  filter(city == "Cabell" | city == "Charleston" | city == "Huntington" | city == "Barboursville" | city == "Charlotte") %>%
+  filter(business_type == "Partnership") 
 # Second, use that newly created dataframe to calculate total loan amount and percentage forgiven for those companies
 
 ```
