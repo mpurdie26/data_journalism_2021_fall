@@ -107,19 +107,19 @@ Some hints to help you answer this question:
 * When you examine the disclosure forms, there may be lots of stock sales and retirement accounts mixed in.  Ignore those. In the table in the disclosure forms, look for "Partnership" or "C-Corp" in the column named "Income Type"
 * This is a link to details on passage of the [CARES ACT](https://www.congress.gov/bill/116th-congress/house-bill/748). You can find a link to how the House voted by clicking on a link from [this page](https://www.congress.gov/bill/116th-congress/house-bill/748/actions).
 
-A3:
-%>%
-  filter(name == "DM Motors" | name == "Dutch Miller of Charleston" | name == "MFM Realty")
-
+A3:The businesses are DM Motor, Inc.; Dutch Miller of Charleston, Inc.; Dutch Miller of Charlotte, Inc.; Dutch Miller Suburu, Inc.; and Dutch Miller Cheverlet, Inc, which are all auto companies that sell cars. The businesses received $3,105,300 total in loans and were forgiven $3,140,471, which makes the percent forgiven 101.1326%. Carol Miller voted yes on the program.
 ```{r}
 
 # Hint
 # First, create a dataframe that only has loans to those five companies
-wv_ppp_loans %>%
-  mutate(name = str_to_title(name)) %>%
-  mutate(city = str_to_title(city)) %>%
-  filter(city == "Cabell" | city == "Charleston" | city == "Huntington" | city == "Barboursville" | city == "Charlotte") %>%
-  filter(business_type == "Partnership") 
+five_companies <- wv_ppp_loans %>%
+  filter(str_detect(name, "DUTCH MILLER|DM MOTOR")) 
 # Second, use that newly created dataframe to calculate total loan amount and percentage forgiven for those companies
+five_companies %>%
+  summarize(
+    total_loans = sum(amount),
+    total_forgiven = sum(forgiveness_amount),
+    percent_forgiven = total_forgiven/total_loans * 100
+  ) 
 
 ```
