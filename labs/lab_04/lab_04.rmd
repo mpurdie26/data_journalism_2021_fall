@@ -89,7 +89,7 @@ maryland_ppp_with_naics_and_demographics <- maryland_ppp_with_naics %>% left_joi
 ## Answer questions
 
 **Q1** What are the top 5 industries (using the NAICS title) with the most PPP applications in Maryland?
-**A1** Taxi services, beauty salons, full-servie restaurants, offices of real estate agents and brokers, and "all other personal services"
+**A1** Taxi services, beauty salons, full-service restaurants, offices of real estate agents and brokers, and "all other personal services"
 
 ```{r}
 # Write the code to produce your answer here
@@ -142,6 +142,7 @@ maryland_ppp_with_naics_and_demographics %>%
   group_by(zip5) %>%
   summarize(
     count = n(),
+    sum = sum(amount),
     PNHA
   ) %>%
 distinct() %>%
