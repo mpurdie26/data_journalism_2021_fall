@@ -28,6 +28,10 @@ You'll need to load two packages for this: the tidyverse and janitor.
 ```{r}
 # Turn off scientific notation
 options(scipen=999)
+#tidyverse
+library(tidyverse)
+#janitor
+library(janitor)
 
 ```
 
@@ -43,6 +47,12 @@ All three data sets are in the data folder.  Write code to load the three in the
 
 **Task** Create a codeblock below this task, then read the data sets in in and assign them to appropriate variable names. There's a fourth data set you'll use in this lab, too, of selected loans in ZIP Code 25401. But there's no need to load it now.
 
+```{r}
+wv_ppp <- read_rds("data/lab_05.rds")
+naics_codes <- read_csv("data/naics_codes.csv")
+wv_county_populations <- read_csv("data/wv_population_county.csv")
+
+```
 ## Answer questions
 
 **Q1.** In the data folder, there is a csv called zip_25401_loan_sample.csv.  It contains a sample of loans from West Virginia ZIP Code 25401. 
