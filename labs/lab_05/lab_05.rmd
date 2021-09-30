@@ -72,9 +72,23 @@ Then answer these questions:
 * How many loans are there at that street address?
 * What are the names of the businesses at that address?
 
-**A1.**
+**A1.** 126 E Burke St has the most loans with six. The business names are Drew Holdings LLC, BRIX27 LLC, Abraham Ashton, Hub Co-Op LLC, and Ronin Properties LLC.
 
 ```{r}
+#read data from Open Refine
+cleaned_zip_25401 <- read_csv("data/cleaned_zip_25401-csv.csv") 
+
+#count
+cleaned_zip_25401 %>%
+  group_by(address) %>%
+  summarize(
+    count = n()
+  ) %>% arrange(desc(count))
+
+#names
+cleaned_zip_25401 %>%
+  filter(address == "126 E Burke St")
+
 
 ```
 
@@ -84,7 +98,7 @@ Google the street address.  Google the business names and search for their corpo
 
 Based on your research, does it seem suspicious that this collection of businesses all got loans using the same address? Why or why not. Use specific facts identified in your research to support your position. 
 
-**A2.**
+**A2.** The location is "The Hub," which is similar to a WeWork in which multiple businesses use the same office space. But they are all connected to the same person, which is a little suspicious. They were all made around 2016 and 2017.
 
 **Q3.** Start by using the West Virginia slice of the PPP loan data that you loaded at the start of the lab to create a subset of PPP loans in West Virginia's second largest county (which you can find in wv_population_county). And then use that table you created to answer the following questions:
 
@@ -98,6 +112,21 @@ Guidance: there are a lot of steps you'll need to take to answer this question. 
 **A3.**
 
 ```{r}
+#second largest county
+wv_county_populations %>%
+  arrange(desc(population_2019))
+
+#PPP loans in Berkeley County
+berkeley_county_ppp <- wv_ppp %>%
+  filter(project_county_name == "BERKELEY") 
+  #export new dataframe
+  write_csv(x = berkeley_county_ppp, "data/berkeley_county_ppp.csv")
+  
+#cleaned city names in Open Refine
+#read Open Refine dataframe
+
+
+#city in Berkeley with most loans
 
 ```
 
