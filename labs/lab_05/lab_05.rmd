@@ -163,7 +163,7 @@ cleaned_berkeley_county_ppp_with_naics %>%
 
 Hint: you will not find the answers to the last three questions in the data.  You could call them directly to get that information, but I don't want you to do that for this assignment.  Instead, do some web research. I would start by Googling the company name from the data and looking at the page that comes up for the business from at http://apps.sos.wv.gov/. I would use information I found on that page and use info about the company from Google, the [Wayback machine](https://archive.org/web/) (which lets you look at older versions of a company's website), Yelp, and Facebook. 
 
-**A5.** Cottle Christi L LLC got the highest approved loan for a full-service restaurants in Martinsburg with a loan of $280,434, which retained 94 jobs and was approved on Feb. 17. 2021.
+**A5.** Cottle Christi L LLC got the highest approved loan for a full-service restaurants in Martinsburg with a loan of $280,434, which retained 94 jobs and was approved on Feb. 17. 2021. Locals know it as Kitzie's Cafe, and it has two locations in Martinsburg. Neither closed during the pandemic. 
 
 ``` {r}
 #table of loans to all full-service restaurants in Martinsburg
