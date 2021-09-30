@@ -109,7 +109,7 @@ Requirement: you MUST export a dataframe of PPP loans from R Studio at some poin
 
 Guidance: there are a lot of steps you'll need to take to answer this question. You may or may not find it helpful to write out in English what you plan to do step-by-step before you start writing code.   
 
-**A3.**
+**A3.** Martinsburg had the most loans in Berkeley County.Full-service restaurants had more loans than any other industry in Martinsburg.
 
 ```{r}
 #second largest county
@@ -124,15 +124,33 @@ berkeley_county_ppp <- wv_ppp %>%
   
 #cleaned city names in Open Refine
 #read Open Refine dataframe
-
+cleaned_berkeley_county_ppp <- read_csv("data/cleaned_berkeley_county_ppp-csv.csv")
 
 #city in Berkeley with most loans
+cleaned_berkeley_county_ppp %>%
+  group_by(city) %>%
+  summarize(
+    count = n()
+  ) %>%
+  arrange(desc(count))
+
+#join NAICS data
+cleaned_berkeley_county_ppp_with_naics <- cleaned_berkeley_county_ppp %>% left_join(naics_codes, by=c("naics_code"))
+
+#industry in Martinsburg with most loans
+cleaned_berkeley_county_ppp_with_naics %>%
+  filter(city == "Martinsburg") %>%
+  group_by(title) %>%
+  summarize(
+    count = n()
+  ) %>%
+  arrange(desc(count))
 
 ```
 
 **Q4.** What are your two best hypotheses, which you'd need to confirm with reporting and further analysis, that explain why that industry is at the top of the list?
 
-**A4.** 
+**A4.** During the start of the pandemic, most full-service restaurants were hit hardest as they were abandoned as essential businesses by society very quickly. Also, the restaurant industry is large in general, so it makes sense that it was hit at a larger extent. 
 
 **Q5.** Start with a table of loans to all businesses in the city and industry that answered question 3. Answer the following questions:
 * What is the name of the business that got the highest approved loan amount? 
@@ -145,4 +163,20 @@ berkeley_county_ppp <- wv_ppp %>%
 
 Hint: you will not find the answers to the last three questions in the data.  You could call them directly to get that information, but I don't want you to do that for this assignment.  Instead, do some web research. I would start by Googling the company name from the data and looking at the page that comes up for the business from at http://apps.sos.wv.gov/. I would use information I found on that page and use info about the company from Google, the [Wayback machine](https://archive.org/web/) (which lets you look at older versions of a company's website), Yelp, and Facebook. 
 
-**A5.**
+**A5.** Cottle Christi L LLC got the highest approved loan for a full-service restaurants in Martinsburg with a loan of $280,434, which retained 94 jobs and was approved on Feb. 17. 2021.
+
+``` {r}
+#table of loans to all full-service restaurants in Martinsburg
+cleaned_berkeley_county_ppp_with_naics %>%
+  filter(city == "Martinsburg" & title == "Full-Service Restaurants") %>%
+  arrange(desc(amount))
+
+#Cottle Christist L LLC info
+cleaned_berkeley_county_ppp_with_naics %>%
+  filter(name == "COTTLE CHRISTI L LLC") %>%
+  summarize(
+    amount,
+    date_approved,
+    jobs_retained
+  )
+```
