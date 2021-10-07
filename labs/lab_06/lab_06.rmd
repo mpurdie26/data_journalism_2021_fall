@@ -84,16 +84,20 @@ international_migration %>%
 **A2** After grouping by county, I developed a mutate function to create a new column that showed the total international migration percentage for that region/county in relation to the entire state of Maryland. After, I sorted it highest to lowest to get my answer.
 
 **Q3** Which region & jurisdiction had the largest percentage change (either negative or positive) for international migration between July 2018 and July 2017? The formula for percentage change is easy to remember: (New-Old)/Old.
-**A3** [write your answer here]
+**A3** Cecil County had the largest percent change between July 2018 and July 2017 with a -127.91%
 
 ```{r}
-# Write the code to produce your answer here
+international_migration %>%
+  group_by(county) %>%
+  mutate(
+    percent_change_2018 = (july_2018 - july_2017)/july_2017 * 100,
+  ) %>% 
+  arrange(desc(percent_change_2018))
 
 ```
 
 **Q4** What's your best guess as to why these changes occurred, and in those places in particular?
-**A4** [write your answer here]
-
+**A4** Programs to support immigratants were defunded by Cecil County or Trump.
 
 ## Back to Tabula
 
@@ -108,7 +112,7 @@ Let's load it into R, and in doing so we'll skip the first two rows and add our 
 **Task** Write code to read the CSV file into a dataframe called `domestic_migration`. As in the pre_lab, you may have to skip 1 or more rows and you may want to supply easier to use column names that use underscores. Your work on the international file should serve as a guide.
 
 ```{r}
-# Write the code to load the CSV file here
+domestic_migration <- read_csv("data/tabula-md-statistical-handbook-domestic.csv", skip=2, col_names=c("county", "july_2010", "july_2011", "july_2012", "july_2013", "july_2014", "july_2015", "july_2016", "july_2017", "july_2018", "total"))
 ```
 
 Add a column for the type of migration ("domestic") and populate it:
@@ -116,25 +120,26 @@ Add a column for the type of migration ("domestic") and populate it:
 **Task** Write the code to add a `migration_type` column to the data and populate it with the value of "domestic"
 
 ```{r}
-# Write the code to add the column here
+domestic_migration %>%
+  mutate(migration_type = "domestic")
 ```
 
 ## Answer questions
 **Q5** Which Maryland individual jurisdiction saw the largest net decrease in domestic migration overall?
-**A5** [write your answer here]
+**A5** Baltimore City saw a decrease of 62,834 in domestic migration.
 
 ```{r}
-# Write the code to produce your answer here
-
+domestic_migration %>%
+  arrange(total)
 ```
 
 **Q6** How many regions & jurisdictions had net positive migration for July 2017, July 2018 and July 2019 (not just individually but all three together)?
-**A6** [write your answer here]
+**A6** 2 regions and 12 jurisdictions has a net positive migration for July 2017, July 2018 and July 2019
 
 ```{r}
-# Write the code to produce your answer here
-
+domestic_migration %>%
+ filter(july_2016 > 0 & july_2017 > 0 & july_2018 > 0)
 ```
 
 **Q7** How would you describe this data? Is there a county or region that stands out, and why?
-**A7** [write your answer here]
+**A7** Carroll and Caroline County stands out as those three years were positive, but the total is negative. Howard, Frederick, and the Southern Maryland Region have the largest overall domestic migration total for jurisdictions in which those three years is positive. Charles, Howard, and Worcester counties were in the positives for every single month.
