@@ -1,7 +1,7 @@
 ---
 title: "lab_06"
-author: "derek willis"
-date: "8/26/2021"
+author: "michael purdie"
+date: "10/07/2021"
 output: html_document
 ---
 
@@ -53,7 +53,7 @@ Let's load it into R, and in doing so we'll skip the first two rows and add our 
 **Task** Write code to read the CSV file into a dataframe called `international_migration`. As in the pre_lab, you may have to skip 1 or more rows and you may want to supply easier to use column names that use underscores.
 
 ```{r}
-# Write the code to load the CSV file here
+international_migration <- read_csv("data/tabula-md-statistical-handbook.csv", skip=2, col_names=c("county", "july_2010", "july_2011", "july_2012", "july_2013", "july_2014", "july_2015", "july_2016", "july_2017", "july_2018", "total"))
 ```
 
 Add a column for the type of migration ("international") and populate it:
@@ -61,21 +61,27 @@ Add a column for the type of migration ("international") and populate it:
 **Task** Write the code to add a `migration_type` column to the data and give it the value of "international"
 
 ```{r}
-# Write the code to add the column here
+international_migration %>%
+  mutate(migration_type = "international")
 ```
 
 ## Answer questions
 
 **Q1** Which region and county/city _below_ the state level accounted for the largest percentage of international migration for the entire time period? You'll need to add and populate a column representing percent of total using `mutate`.
-**A1** [write your answer here]
+**A1** Suburban Washignton Region with 62.84% and Montgomery County with 36.79%
 
 ```{r}
-# Write the code to produce your answer here
+international_migration %>%
+  group_by(county) %>%
+  mutate(
+    international_migration_percentage = total/198996 * 100
+  ) %>%
+  arrange(desc(international_migration_percentage))
 
 ```
 
 **Q2** Write a sentence or two that describes the data you produced in A1. Try to convey the most important idea.
-**A2** [write your answer here]
+**A2** After grouping by county, I developed a mutate function to create a new column that showed the total international migration percentage for that region/county in relation to the entire state of Maryland. After, I sorted it highest to lowest to get my answer.
 
 **Q3** Which region & jurisdiction had the largest percentage change (either negative or positive) for international migration between July 2018 and July 2017? The formula for percentage change is easy to remember: (New-Old)/Old.
 **A3** [write your answer here]
