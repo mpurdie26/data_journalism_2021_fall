@@ -25,16 +25,15 @@ In this notebook, we are reverse engineering the story, [Over a Dozen Black and 
 Loading required libraries for this analysis.
 
 ```{r echo=FALSE, message=FALSE}
+#install readxl
+install.packages("readxl")
+
 #load tidyverse
 library(tidyverse)
 #load janitor
 library(janitor)
 #load lubridate
 library(lubridate)
-
-#additional libraries
-#install readxl
-install.packages("readxl")
 #load readxl
 library(readxl)
 
@@ -46,11 +45,10 @@ In this section, describe the source of the data, write a basic data dictionary 
 
 ```{r}
 # Load required data
-
-# Path to data should be loaded from folder "data" i.e. read_csv("data/name_of_data.csv")
+allegations <- read_csv("data/CCRB-Complaint-Data_202007271729/allegations_202007271729.csv")
+allegation_description <- read_excel("data/CCRB-Complaint-Data_202007271729/ccrb_data_layout_table.xlsx")
 
 # Clean required data and prepare for analysis if needed. 
-
 
 ```
 
