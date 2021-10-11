@@ -48,7 +48,8 @@ In this section, describe the source of the data, write a basic data dictionary 
 allegations <- read_csv("data/CCRB-Complaint-Data_202007271729/allegations_202007271729.csv")
 allegation_description <- read_excel("data/CCRB-Complaint-Data_202007271729/ccrb_data_layout_table.xlsx")
 
-# Clean required data and prepare for analysis if needed. 
+#Cleaned allegations data in Open Refine, loaded below
+cleaned_allegations <- read_csv("data/CCRB-Complaint-Data_202007271729/cleaned_allegations_202007271729-csv-csv.csv")
 
 ```
 
@@ -62,9 +63,40 @@ In this notebook, we are reverse engineering five sentences from the story.
 * **Analysis summary**: [Write up two to three sentences describing the results of your analysis.  Were you able to confirm the finding? If not, why not?]
 
 ```{r}
-# Put code to reverse engineer sentence here
+#High-ranking officers with three or more complaints
+cleaned_allegations %>%
+  filter(rank_above_captain == "Yes") %>%
+  filter(cleaned_board_disposition == "Substantiated") %>%
+  group_by(unique_mos_id, first_name, last_name, rank_now, mos_ethnicity) %>%
+  summarize(
+    count = n()
+  ) %>%
+    filter(count > 2) %>%
+    arrange(desc(count))
 
-# Display results of code below this codeblock
+#White high-ranking officers with three or more complaints
+cleaned_allegations %>%
+  filter(rank_above_captain == "Yes") %>%
+  filter(cleaned_board_disposition == "Substantiated") %>%
+  filter(mos_ethnicity == "White") %>%
+  group_by(unique_mos_id, first_name, last_name, rank_now, mos_ethnicity) %>%
+    summarize(
+      count = n()
+    ) %>%
+      filter(count > 2) %>%
+      arrange(desc(count))
+
+
+#High-ranking officers with three or more complaints that have reached the rank of deputy inspector
+cleaned_allegations %>%
+  filter(rank_now == "Deputy Inspector") %>%
+  filter(cleaned_board_disposition == "Substantiated") %>%
+  group_by(unique_mos_id, first_name, last_name, rank_now, mos_ethnicity) %>%
+    summarize(
+      count = n()
+    ) %>%
+      filter(count > 2) %>%
+      arrange(desc(count))
 
 ```
 
