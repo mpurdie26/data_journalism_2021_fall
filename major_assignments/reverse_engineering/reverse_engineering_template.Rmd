@@ -46,6 +46,7 @@ In this section, describe the source of the data, write a basic data dictionary 
 ```{r}
 # Load required data
 allegations <- read_csv("data/CCRB-Complaint-Data_202007271729/allegations_202007271729.csv")
+#This doesn't work idk what Shreya means 
 allegation_description <- read_excel("data/CCRB-Complaint-Data_202007271729/ccrb_data_layout_table.xlsx")
 
 #Cleaned allegations data in Open Refine, loaded below
@@ -60,7 +61,7 @@ In this notebook, we are reverse engineering five sentences from the story.
 
 * **Sentence text**: “A dozen of those high-ranking officers have three or more complaints with substantiated allegations; 10 are white. Five have reached the rank of deputy inspector, the lowest promoted at the commissioner’s discretion; all are white.”
 
-* **Analysis summary**: [Write up two to three sentences describing the results of your analysis.  Were you able to confirm the finding? If not, why not?]
+* **Analysis summary**: My analysis did not confirm the results from the article, but I believe this is due to the fact that the data has been updated since. I found that there were 25 high-ranking officers with three or more complaints, not a dozen, and 17 were White, not 10. Also, there were 11 high-ranking officers with three or more complaints that are now a deputy inspector, and they are not all White. In regard to format, I narrowed down the data to the appropriate requirements, then grouped and summarized to obtain the number of total complaints for each officer. Finally, I filtered for officers with more than two complaints.
 
 ```{r}
 #High-ranking officers with three or more complaints
