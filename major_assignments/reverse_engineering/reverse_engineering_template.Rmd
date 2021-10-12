@@ -57,7 +57,7 @@ cleaned_allegations <- allegations %>%
       TRUE ~ board_disposition
     )
   ) %>%
-  #new column that places officers into "yes" or "no
+  #new column that identifies officers that are currently a higher rank than captain
   mutate(
     rank_above_captain = if_else(
       rank_now == 'Deputy Inspector' | 
