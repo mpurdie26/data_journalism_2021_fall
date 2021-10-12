@@ -46,8 +46,17 @@ In this section, describe the source of the data, write a basic data dictionary 
 ```{r}
 # Load required data
 allegations <- read_csv("data/CCRB-Complaint-Data_202007271729/allegations_202007271729.csv")
-#This doesn't work idk what Shreya means 
-allegation_description <- read_excel("data/CCRB-Complaint-Data_202007271729/ccrb_data_layout_table.xlsx")
+allegation_description <- read_excel("data/CCRB-Complaint-Data_202007271729/CCRB Data Layout Table.xlsx")
+
+#cleaning data to add new columns
+cleaned_allegations <- allegations %>%
+  mutate(
+    cleaned_board_disposition = case_when(
+      str_detect()
+    )
+
+  )
+
 
 #Cleaned allegations data in Open Refine, loaded below
 cleaned_allegations <- read_csv("data/CCRB-Complaint-Data_202007271729/cleaned_allegations_202007271729-csv-csv.csv")
@@ -134,9 +143,18 @@ cleaned_allegations %>%
 * **Analysis summary**: [Write up two to three sentences describing the results of your analysis.  Were you able to confirm the finding? If not, why not?]
 
 ```{r}
-# Put code to reverse engineer sentence here
+#make new dataset that gives number of officers with at least one substantiated complaints
+officers_with_complaints <- cleaned_allegations %>%
+  filter(cleaned_board_disposition == "Substantiated") %>%
+  distinct(unique_mos_id, first_name, last_name, rank_now)
 
-# Display results of code below this codeblock
+#number of officers with at least one substantiated complaint/total number of officers
+officers_with_complaints %>%
+    summarize(
+      total = n()/36000
+    ) 
+
+#1 in 9 = .1111
 
 ```
 
