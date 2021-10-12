@@ -126,10 +126,24 @@ cleaned_allegations %>%
 * **Analysis summary**: [Write up two to three sentences describing the results of your analysis.  Were you able to confirm the finding? If not, why not?]
 
 ```{r}
-# Put code to reverse engineer sentence here
+#number of high-ranking officers with at least one substantiated misconduct allegation
+cleaned_allegations %>%
+  filter(rank_above_captain == "Yes") %>%
+  filter(cleaned_board_disposition == "Substantiated") %>%
+  group_by(unique_mos_id, first_name, last_name, rank_now, mos_ethnicity) %>%
+  summarize(
+    count = n()
+  ) 
 
-# Display results of code below this codeblock
-
+#most common misconduct allegation
+cleaned_allegations %>%
+  filter(rank_above_captain == "Yes") %>%
+  filter(cleaned_board_disposition == "Substantiated") %>%
+  group_by(allegation) %>%
+  summarize(
+    count = n()
+  ) %>%
+  arrange(desc(count))
 ```
 
 ### Sentence 3
@@ -152,7 +166,7 @@ cleaned_allegations %>%
 * **Analysis summary**: [Write up two to three sentences describing the results of your analysis.  Were you able to confirm the finding? If not, why not?]
 
 ```{r}
-#make new dataset that gives number of officers with at least one substantiated complaints
+#make new dataset that gives total number of officers with at least one substantiated complaints
 officers_with_complaints <- cleaned_allegations %>%
   filter(cleaned_board_disposition == "Substantiated") %>%
   distinct(unique_mos_id, first_name, last_name, rank_now)
