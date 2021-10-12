@@ -88,10 +88,10 @@ cleaned_allegations %>%
   filter(cleaned_board_disposition == "Substantiated") %>%
   group_by(unique_mos_id, first_name, last_name, rank_now, mos_ethnicity) %>%
   summarize(
-    count = n()
+    total_allegations = n()
   ) %>%
-    filter(count > 2) %>%
-    arrange(desc(count))
+    filter(total_allegations > 2) %>%
+    arrange(desc(total_allegations))
 
 #White high-ranking officers with three or more complaints
 cleaned_allegations %>%
@@ -100,10 +100,10 @@ cleaned_allegations %>%
   filter(mos_ethnicity == "White") %>%
   group_by(unique_mos_id, first_name, last_name, rank_now, mos_ethnicity) %>%
     summarize(
-      count = n()
+      total_allegations = n()
     ) %>%
-      filter(count > 2) %>%
-      arrange(desc(count))
+      filter(total_allegations > 2) %>%
+      arrange(desc(total_allegations))
 
 
 #High-ranking officers with three or more complaints that have reached the rank of deputy inspector
@@ -112,10 +112,10 @@ cleaned_allegations %>%
   filter(cleaned_board_disposition == "Substantiated") %>%
   group_by(unique_mos_id, first_name, last_name, rank_now, mos_ethnicity) %>%
     summarize(
-      count = n()
+      total_allegations = n()
     ) %>%
-      filter(count > 2) %>%
-      arrange(desc(count))
+      filter(total_allegations > 2) %>%
+      arrange(desc(total_allegations))
 
 ```
 
@@ -132,7 +132,7 @@ cleaned_allegations %>%
   filter(cleaned_board_disposition == "Substantiated") %>%
   group_by(unique_mos_id, first_name, last_name, rank_now, mos_ethnicity) %>%
   summarize(
-    count = n()
+    total_allegations = n()
   ) 
 
 #most common misconduct allegation
@@ -153,9 +153,28 @@ cleaned_allegations %>%
 * **Analysis summary**: [Write up two to three sentences describing the results of your analysis.  Were you able to confirm the finding? If not, why not?]
 
 ```{r}
-# Put code to reverse engineer sentence here
+#make new dataset that shows only Christopher McCormack's allegations
+#Christopher McCormack's unique_mos_id is 18589
+mccormack_allegations <- cleaned_allegations %>%
+  filter(unique_mos_id == 18589)
 
-# Display results of code below this codeblock
+#number of unsubstantiated allegations for Christopher McCormack
+mccormack_allegations %>% 
+  filter(cleaned_board_disposition == "Unsubstantiated") %>%
+  group_by(unique_mos_id) %>%
+  summarize(
+    unsubstantiated_count = n()
+  )
+
+#unfounded claims were not entered into the dataset
+
+#number of exonerated allegations for Christopher McCormack
+mccormack_allegations %>% 
+  filter(cleaned_board_disposition == "Exonerated") %>%
+  group_by(unique_mos_id) %>%
+  summarize(
+    exonerated_count = n()
+  )
 
 ```
 
@@ -189,8 +208,13 @@ officers_with_complaints %>%
 
 ```{r}
 # Put code to reverse engineer sentence here
-
-# Display results of code below this codeblock
+cleaned_allegations %>%
+  filter(rank_above_captain == "Yes") %>%
+ group_by(unique_mos_id, first_name, last_name, rank_now, mos_ethnicity) %>%
+ summarize(
+    total_allegations = n()
+  ) %>%
+  arrange(desc(total_allegations))
 
 ```
 
