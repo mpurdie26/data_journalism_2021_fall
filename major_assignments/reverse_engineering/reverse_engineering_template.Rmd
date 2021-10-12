@@ -48,18 +48,27 @@ In this section, describe the source of the data, write a basic data dictionary 
 allegations <- read_csv("data/CCRB-Complaint-Data_202007271729/allegations_202007271729.csv")
 allegation_description <- read_excel("data/CCRB-Complaint-Data_202007271729/CCRB Data Layout Table.xlsx")
 
-#cleaning data to add new columns
+#cleaning data
 cleaned_allegations <- allegations %>%
+  #new cleaned board_disposition column
   mutate(
     cleaned_board_disposition = case_when(
-      str_detect()
+      str_detect(board_disposition, "^S") ~ "Substantiated",
+      TRUE ~ board_disposition
     )
-
+  ) %>%
+  #new column that places officers into "yes" or "no
+  mutate(
+    rank_above_captain = if_else(
+      rank_now == 'Deputy Inspector' | 
+      rank_now == 'Inspector' | 
+      rank_now == 'Deputy Chief' | 
+      rank_now == 'Assistant Chief' | 
+      rank_now == 'Bureau Chief' | 
+      rank_now == 'Police Comissioner' | 
+      rank_now == 'Chiefs and other ranks', "Yes", "No")
   )
 
-
-#Cleaned allegations data in Open Refine, loaded below
-cleaned_allegations <- read_csv("data/CCRB-Complaint-Data_202007271729/cleaned_allegations_202007271729-csv-csv.csv")
 
 ```
 
