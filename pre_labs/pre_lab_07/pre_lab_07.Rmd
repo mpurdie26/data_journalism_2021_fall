@@ -1,7 +1,7 @@
 ---
 title: "pre_lab_07.Rmd"
-author: "sean mussenden"
-date: "8/24/2021"
+author: "Michael purdie"
+date: "10/13/2021"
 output: html_document
 ---
 
