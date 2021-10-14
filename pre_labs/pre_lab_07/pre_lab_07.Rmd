@@ -693,7 +693,7 @@ First, let's look at the codeblock we wrote earlier to extract the number of emp
 
 ### Task 24: Run code to load table from earlier
 **Task** Run the following code to load table from earlier. Briefly describe the output that appears below the codeblock.
-**Answer**
+**Answer** Just one piece from the mining datafram.
 
 ```{r}
 
@@ -720,7 +720,7 @@ This contains all the steps we needed to extract the information from one sector
 First, we need to build a list of URLs to loop through in a "for loop." We can do that using the dataframe we made in the last chapter.
 ### Task 25: Run code to load the table from the last chapter
 **Task** Run the following code to load table from last chapter. Briefly describe the output that appears below the codeblock.
-**Answer**
+**Answer** Once again, eachs sector and its description lol.
 ```{r}
 # Define url of page we want to scrape
 
@@ -760,7 +760,7 @@ We're going to use mutate() and paste0() to concatenate (mash together) the thin
 
 ### Task 26: Run code to build url
 **Task** Run the following code to build url. Briefly describe the output that appears below the codeblock.
-**Answer**
+**Answer** A new column was made to make a url for each sector.
 
 ```{r}
 
@@ -782,7 +782,7 @@ On the Utilities page (sector code 22), the ID for the table we want is "iag22em
 
 ### Task 27: Run code to build id
 **Task** Run the following code to build id. Briefly describe the output that appears below the codeblock.
-**Answer**
+**Answer** A new column was made with each sectors xpath id.
 
 ```{r}
 
@@ -799,7 +799,7 @@ Lastly, we're going to use filter to remove the "Public Administration" sector, 
 
 ### Task 28: Run code to filter table
 **Task** Run the following code to filter table. Briefly describe the output that appears below the codeblock.
-**Answer**
+**Answer** Public Administration was removed from the list since the website doesn't exist.
 
 ```{r}
 
@@ -822,7 +822,7 @@ We get 19 dataframes, each with one row, one for each sector.
 
 ### Task 29: Run code to run for loop and keep one row
 **Task** Run the following for loop and keep one row. Briefly describe the output that appears below the codeblock.
-**Answer**
+**Answer** Each row/sector was printed as its own dataframe.
 
 ```{r}
 
@@ -854,7 +854,7 @@ To see how this is working, we're going to edit our print statement at the end a
 
 ### Task 30: Run code to run for loop to store url and xpath value
 **Task** Run the following for loop to store url and xpath value. Briefly describe the output that appears below the codeblock.
-**Answer**
+**Answer** A new xpath id value has been made for each url/row.
 ```{r}
 
 # For loop, iterating over each row in our naics industry dataframe
@@ -887,7 +887,7 @@ So, when you run this code, it will print out 19 dataframes inside of nested lis
 
 ### Task 31: Run code to run for loop to get tables
 **Task** Run the following for loop to get tables. Briefly describe the output that appears below the codeblock.
-**Answer**
+**Answer** 19 dataframes inside nested lists
 
 ```{r}
 
@@ -921,7 +921,7 @@ In this next step, we use employment_info <- employment_info[[1]]  to extract ea
 
 ### Task 32: Run code to run for loop to clean up tables
 **Task** Run the following for loop to clean up tables. Briefly describe the output that appears below the codeblock.
-**Answer**
+**Answer** 19 clean dataframes with 1 row of data each.
 
 ```{r}
 
@@ -950,6 +950,7 @@ for(row_number in 1:nrow(naics_industry)) {
       clean_names() %>%
       slice(2)
 
+
     # To help us see what's happening as we build this, we're going to print the thing we're creating.  
     print(employment_info)
 
@@ -962,7 +963,7 @@ We can add that back in by using bind_cols() to reconnect the each_row_df, which
 
 ### Task 33: Run code to run for loop to add in data
 **Task** Run the following for loop to add in data. Briefly describe the output that appears below the codeblock.
-**Answer**
+**Answer** There are now 10 columns for each dataframe.
 
 ```{r}
 
@@ -1004,7 +1005,7 @@ Let's use parse_number() to remove the comma from the jun_2021 number and conver
 
 ### Task 34: Run code to run for loop to clean up tables
 **Task** Run the following for loop to clean up tables. Briefly describe the output that appears below the codeblock.
-**Answer**
+**Answer** Only the three columns we want remain in each dataframe, and the numbers qnd column names were cleaned.
 
 ```{r}
 
@@ -1057,7 +1058,7 @@ And inside our "for loop" at the end, we'll bind each employment_info dataframe 
 
 ### Task 35: Run code to run for loop to combine tables into a single table
 **Task** Run the following for loop combine tables into a single table. Briefly describe the output that appears below the codeblock.
-**Answer**
+**Answer** All dataframes were joined into one with 19 rows and 3 columns.
 
 ```{r}
 
@@ -1114,7 +1115,7 @@ Here's the table on the mining sector page: [https://www.bls.gov/iag/tgs/iag21.h
 
 ### Task 36: Go to the web page linked above
 **Task** Visit the web page linked above. Briefly describe what you see there.
-**Answer**
+**Answer** Once again, the workforce statistics for the mining secotr.
 
 ### Task 37: Load image
 **Task** Run the following code to display an image showing what you should see on the web page.
@@ -1128,7 +1129,7 @@ And here's the table for the agriculture sector.
 
 ### Task 38: Go to the web page linked above
 **Task** Visit the web page linked above. Briefly describe what you see there.
-**Answer**
+**Answer** The workforce statistics for the agriculture sector.
 
 ### Task 39: Load image
 **Task** Run the following code to display an image showing what you should see on the web page.
@@ -1142,7 +1143,7 @@ In the second row of this table, it has the unemployment rate. Nowhere on the pa
 
 ### Task 40: Run code to remove agriculture from table
 **Task** Run the following code to remove agriculture from table. Briefly describe the output that appears below the codeblock.
-**Answer**
+**Answer** jun_2021_employees for the agriculture sector was changed to NA.
 
 ```{r}
 # remove the suspicious value for agriculture.
