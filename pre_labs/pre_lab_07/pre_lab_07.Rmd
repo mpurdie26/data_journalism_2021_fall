@@ -12,6 +12,9 @@ knitr::opts_chunk$set(echo = TRUE)
 ## Instructor demonstration points to hit
 1. Ensure students install rvest package and load it.
 
+``` {r}
+install.packages("rvest")
+```
 
 ## Chapter 15
 
@@ -40,7 +43,7 @@ Let's suppose we can't find a table like that for download, but we do see a vers
 
 ### Task 2: Go to the web page linked above
 **Task** Visit the web page linked above. Briefly describe what you see there.
-**Answer**
+**Answer** The page starts with a "Industry Classification Overview" section that outlines structure, history, and the like with hyperlinks to other documents. Below this section is a description of each sector, a description of each division, time spans for their conversations, and more. 
 
 ### Task 3: Load image
 **Task** Run the following code to display an image showing what you should see on the web page.
@@ -78,7 +81,7 @@ In our web browser, if we right-click anywhere on the page and select "view sour
 
 ### Task 3: View source
 **Task** Follow the directions in the previous paragraph. Briefly describe what you see there.
-**Answer**
+**Answer** This displays the HTML code for the website, with tags like <div> that aren't used in R.
 
 Here's a picture of what some of the source code looks like.
 
@@ -95,7 +98,7 @@ Let's write a bit of code to tell R to go to the URL for the page and ingest all
 
 ### Task 5: Run code to read in html
 **Task** Run the following code to read in the html. Briefly describe the output that appears below the codeblock.
-**Answer**
+**Answer** It appears to be reading the HTML document and storing data under naics_industry, with a list of 2.
 
 ```{r}
 # read in the html
@@ -115,7 +118,7 @@ If we click on the name "naics_industry" in our environment window, we can see t
 
 ### Task 6: Examine html
 **Task** Follow the directions in the previous paragraph to click on naics_industry in the environment window. Briefly describe what you see there.
-**Answer**
+**Answer** It is showing us the general structure of the HTML, in which there are two main sections: head and body.
 
 Nested within the `<html>` tag is the `<head>` and `<body>`, the two fundamental sections of most web pages. We're going to pull information out of the `<body>` tag in a bit.
 
@@ -133,7 +136,7 @@ On the page, find the data we want to grab -- "Table 2. NAICS Sectors" - and rig
 
 ### Task 8: Inspect element
 **Task** Follow the directions in the previous paragraph. Briefly describe what you see there.
-**Answer**
+**Answer** I see the code for that specific table, all stored in a <table>. There are two parts to the table: <tr> and <tbody>.
 
 ### Task 9: Load image
 **Task** Run the following code to display an image showing what you should see on the web page.
@@ -147,7 +150,7 @@ Because it's inside of a table, and not some other kind of element (like a `<div
 
 ### Task 10: Run code to process tables
 **Task** Run the following code to process tables. Briefly describe the output that appears below the codeblock.
-**Answer**
+**Answer** All six tables from the webpage have been exported into R.
 
 ```{r}
 # read in the html and extract all the tables
