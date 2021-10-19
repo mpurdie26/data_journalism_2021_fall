@@ -125,7 +125,7 @@ cleaned_allegations %>%
       arrange(desc(total_allegations)) %>%
       summarize(
         total_deputy_inspector = n()
-  )
+      )
 
 ```
 
@@ -143,7 +143,11 @@ cleaned_allegations %>%
   group_by(unique_mos_id, first_name, last_name, rank_now, mos_ethnicity) %>%
   summarize(
     total_allegations = n()
-  ) 
+  )  %>%
+  ungroup() %>%
+  summarize(
+        total_high_ranking_substantiated = n()
+      )
 
 #most common misconduct allegation
 cleaned_allegations %>%
@@ -220,8 +224,8 @@ officers_with_complaints %>%
 # Put code to reverse engineer sentence here
 cleaned_allegations %>%
   filter(rank_above_captain == "Yes") %>%
- group_by(unique_mos_id, first_name, last_name, rank_now, mos_ethnicity) %>%
- summarize(
+  group_by(unique_mos_id, first_name, last_name, rank_now, mos_ethnicity) %>%
+  summarize(
     total_allegations = n()
   ) %>%
   arrange(desc(total_allegations))
