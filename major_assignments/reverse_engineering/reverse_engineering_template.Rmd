@@ -25,8 +25,6 @@ In this notebook, we are reverse engineering the story, [Over a Dozen Black and 
 Loading required libraries for this analysis.
 
 ```{r echo=FALSE, message=FALSE}
-#install readxl
-install.packages("readxl")
 
 #load tidyverse
 library(tidyverse)
@@ -90,8 +88,12 @@ cleaned_allegations %>%
   summarize(
     total_allegations = n()
   ) %>%
+    ungroup() %>%
     filter(total_allegations > 2) %>%
-    arrange(desc(total_allegations))
+    arrange(desc(total_allegations)) %>%
+    summarize(
+          total_high_ranking = n()
+        )
 
 #White high-ranking officers with three or more complaints
 cleaned_allegations %>%
@@ -102,8 +104,12 @@ cleaned_allegations %>%
     summarize(
       total_allegations = n()
     ) %>%
-      filter(total_allegations > 2) %>%
-      arrange(desc(total_allegations))
+    ungroup() %>%  
+    filter(total_allegations > 2) %>%
+      arrange(desc(total_allegations)) %>%
+      summarize(
+        total_high_ranking_white = n()
+       )
 
 
 #High-ranking officers with three or more complaints that have reached the rank of deputy inspector
@@ -114,8 +120,12 @@ cleaned_allegations %>%
     summarize(
       total_allegations = n()
     ) %>%
+      ungroup() %>%
       filter(total_allegations > 2) %>%
-      arrange(desc(total_allegations))
+      arrange(desc(total_allegations)) %>%
+      summarize(
+        total_deputy_inspector = n()
+  )
 
 ```
 
