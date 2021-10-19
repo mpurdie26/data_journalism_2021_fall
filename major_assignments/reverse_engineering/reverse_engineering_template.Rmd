@@ -65,6 +65,19 @@ cleaned_allegations <- allegations %>%
       rank_now == 'Bureau Chief' | 
       rank_now == 'Police Comissioner' | 
       rank_now == 'Chiefs and other ranks', "Yes", "No")
+  ) %>%
+  #new grouped_allegations column
+  mutate(
+    grouped_allegation = case_when(
+      str_detect(allegation, "search|Search|Searched") ~ "Property Entries and Searches",
+      str_detect(allegation, "Physical|Force|Push|Dragged|Punch|club|Beat|Pepper|Club") ~ "Force",
+      str_detect(allegation, "Threat|threat") ~ "Threat",
+      str_detect(allegation, "stop|Stop|Frisk|Question") ~ "Stop, Question, and Frisk",
+      str_detect(allegation, "Word|Curse|Words|tone|Black|Hispanic|Discourtesy|Action") ~ "Language and Discourtesy",
+     str_detect(allegation, "Retaliatory|Arrest|Detention") ~ "Retaliatory Arrests and Summons",
+      str_detect(allegation, "Abuse|Refusal|Property") ~ "Other Abuse of Authority",
+      TRUE ~ allegation
+    )
   )
 
 
@@ -153,7 +166,7 @@ cleaned_allegations %>%
 cleaned_allegations %>%
   filter(rank_above_captain == "Yes") %>%
   filter(cleaned_board_disposition == "Substantiated") %>%
-  group_by(allegation) %>%
+  group_by(grouped_allegation) %>%
   summarize(
     count = n()
   ) %>%
