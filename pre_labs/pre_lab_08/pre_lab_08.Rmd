@@ -35,7 +35,7 @@ To use the API, you need to get [an API key from the Census Bureau](https://api.
 **Task** Replace YOUR KEY HERE in the codeblock below with your Census API Key (leave the quotemarks).
 
 ```{r echo=FALSE}
-#census_api_key("YOUR KEY HERE", install=TRUE)
+#census_api_key("b559c55dc9a86baaa9ab42174d2fa978a618dff1", install=TRUE)
 ```
 
 The `install=TRUE` part saves your key for future use.
