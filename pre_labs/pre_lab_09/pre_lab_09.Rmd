@@ -1,7 +1,7 @@
 ---
 title: "pre_lab_09.Rmd"
-author: "sean mussenden"
-date: "8/24/2021"
+author: "michael purdie"
+date: "10/26/2021"
 output: html_document
 ---
 
@@ -70,7 +70,7 @@ With ggplot, the first thing we'll always do is draw a blank canvas that will ho
 
 ### Task 4: Create an empty ggplot container
 **Task** Run the following code. Explain what you see after running the code in the space below.
-**Answer**
+**Answer** A blank plot
 
 ```{r}
 maryland_ppp_top_counties %>%
@@ -193,8 +193,8 @@ maryland_ppp_top_counties %>%
   theme_economist() +
   labs(
     title="Maryland Counties with Most PPP Loans",
-    x = "total loans",
-    y = "county",
+    x = "county",
+    y = "total loans",
     caption = "source: SBA PPP loan database"
     
   )
