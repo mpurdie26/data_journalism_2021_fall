@@ -1,7 +1,7 @@
 ---
 title: "lab_09"
-author: "sean mussenden"
-date: "8/26/2021"
+author: "michael purdie"
+date: "10/28/2021"
 output: html_document
 ---
 
@@ -16,6 +16,19 @@ knitr::opts_chunk$set(echo = TRUE)
 ## Load libraries and establish settings
 
 **Task** Create a codeblock and load appropriate packages and settings for this lab.
+
+```{r}
+#load packages
+library(tidyverse)
+library(tidycensus)
+
+#set Census API key
+census_api_key("b559c55dc9a86baaa9ab42174d2fa978a618dff1", overwrite=TRUE)
+
+#load data
+ppp_per_state <- read_csv("data/state_ppp_all.csv")
+wv_ppp <- read_rds("data/lab_09.rds")
+```
 
 ## Questions
 
@@ -32,9 +45,35 @@ You MUST do the following things when answering this question:
 Basically, your chart should look like this image, which will appear when you run the codeblock below. 
 
 ```{r}
+wv_april_ppp <- wv_ppp %>%
+  group_by(date_approved) %>%
+  summarise(
+    total_loans=n()
+  ) %>%
+  filter(str_detect(date_approved, "^2020-04"))
+
+wv_april_ppp %>%
+  ggplot(aes(x=date_approved, y=total_loans)) +
+  geom_line() + 
+  scale_x_date(date_breaks = "1 day", date_labels = "%d-%b-%Y") +
+  geom_point() + 
+  geom_text(aes(label=total_loans), nudge_x = -1, nudge_y = 0,check_overlap = T) +
+  theme(
+    axis.text.x = element_text(angle = 45,  hjust=1)
+  ) +
+  labs(
+    title="WV PPP Approved Loans in April 2020",
+    x = "Date Approved",
+    y = "Total Loans",
+    caption = "source: SBA PPP loan database"
+  )
+  
+```
+
+```{r}
 knitr::include_graphics(rep("images/chart_1.png"))
 ```
-**A1.** 
+**A1.** April 28, 2020
 
 **Q2.** What are the top 10 states that got the most PPP loans per 100,000 people? You MUST do the following things when answering this question:
 
@@ -44,7 +83,38 @@ knitr::include_graphics(rep("images/chart_1.png"))
 * Use ggplot to make a horizontal bar chart that shows the top 10 states, with the length of the bar determined by the state's total PPP loans per 100,000 people. Give it an appropriate title, source, and x and y axis titles. 
 * Make the bars on the chart blue! I didn't show you how to do this in the prelab, so do some web sleuthing to figure it out.  
 
-**A2.** 
+``` {r}
+state_populations <- 
+  get_acs(geography = "state",
+          variables = c(total_pop = "B01001_001"),
+          year = 2019) %>%
+  rename(state = NAME, population = estimate) %>%
+  arrange(desc(population))
+
+top10_ppp_states_per_100k <- ppp_per_state %>%
+  mutate(state = case_when(
+    state == "S Dakota" ~ "South Dakota",
+    state == "N Dakota" ~ "North Dakota",
+    TRUE ~ state)) %>%
+  inner_join(state_populations, by=c("state")) %>%
+  select(-GEOID, -variable, -moe) %>%
+  mutate(total_loans_per_100k = total_ppp_loans/population*100000) %>%
+  arrange(desc(total_loans_per_100k)) %>%
+  head(10)
+
+top10_ppp_states_per_100k %>%
+  ggplot() +
+  geom_bar(aes(x=reorder(state, total_loans_per_100k), weight=total_loans_per_100k), fill="steelblue") +
+  coord_flip() +
+  labs(
+    title="Top 10 States that got the Most PPP Loans per 100,000 People",
+    x = "State",
+    y = "Total Loans",
+    caption = "source: SBA PPP loan database and Census API database"
+  )
+```
+
+**A2.** South Dakota, North Dakota, Nebraska, Georgia, Iowa, Illinois, Louisiana, Florida, Mississippi, and Montana
 
 **Q3.**  A scatterplot is a type of chart that helps us see relationships between two variables. One variable goes on the x axis, the other on the y axis.  For each row/observation in our data, a scatterplot puts a circle (or a "point") where the two variables intersect on a grid. 
 
@@ -65,8 +135,25 @@ To answer those questions, make a codeblock and do the following:
 3. There are a bunch of NAs in the forgiveness amount column, for the purposes of this assignment only, let's assume those are actually supposed to be 0. So make all the NAs 0. 
 4. Make a scatterplot. I didn't show you how to do this, so look it up! 
 5. In the answer space below, describe what you see and answer the questions posed above.  In a general sense, what do you think this means?  
+``` {r}
+wv_ppp_over_25k <- wv_ppp %>%
+  filter(amount < 25000) %>%
+  mutate(forgiveness_amount = case_when(
+    is.na(forgiveness_amount) ~ 0,
+    TRUE ~ forgiveness_amount)) 
 
+wv_ppp_over_25k %>%    
+  ggplot() +
+  geom_point(aes(x=current_approval_amount, y=forgiveness_amount), size=1) +
+  labs(
+    title="Amount of PPP Loan Approved vs. Forgiven for WV Loans More Than $25,000",
+    x = "Amount Approved",
+    y = "Amount Forgiven",
+    caption = "source: SBA PPP loan database"
+  )
+  
+  
+```
 **A3.**  
-
-
+There is a straight line going through the middle of the plot, representing loans in which the amount approved is the same as amount forgiven. Other points under the line are also represented in a line, possibly showing percent frames forgiven from SBA.
 -30-
