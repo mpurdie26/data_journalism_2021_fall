@@ -73,28 +73,31 @@ cleaned_allegations <- allegations %>%
       str_detect(allegation, "Threat|threat") ~ "Threat",
       str_detect(allegation, "stop|Stop|Frisk|Question") ~ "Stop, Question, and Frisk",
       str_detect(allegation, "Word|Curse|Words|tone|Black|Hispanic|Discourtesy|Action") ~ "Language and Discourtesy",
-     str_detect(allegation, "Retaliatory|Arrest|Detention") ~ "Retaliatory Arrests and Summons",
+      str_detect(allegation, "Retaliatory|Arrest|Detention") ~ "Retaliatory Arrests and Summons",
       str_detect(allegation, "Abuse|Refusal|Property") ~ "Other Abuse of Authority",
-      TRUE ~ allegation
+      TRUE ~ "Other"
     )
   )
 
 
 ```
 
-## Data Library
-Our data dictionary describes what each variable (column name) means in the cleaned_allegations dtaframe and gives the number of variable types for each variables. The only variables outlined in the dictionary are the ones used in order to reverse engineer the article.
+## Data Dictionary
+Our data dictionary describes what each variable (column name) means in the cleaned_allegations dataframe and gives the number of variable types for each variables. The only variables outlined in the dictionary are the ones used in order to reverse engineer the article.
 
 The following structure is used for our data dictionary:
 variable_name: Description of variable (# of variable types)
 
-unique_mos_id:
-first_name:
-last_name:
-rank_now:
-mos_ethnicity:
-
-
+unique_mos_id: The unique identification number given to each Member of Service in the NYPD (3996)
+first_name: The first name of the Member of Service in the NYPD who has received a complaint, limited to 10 characters (1217)
+last_name: The last name of the Member of Service in the NYPD who has received a complaint, limited to 10 characters (2835)
+rank_now: The current rank of the Member of Service in the NYPD who has received a complaint (8)
+mos_ethnicity: The ethnicity of the Member of Service in the NYPD who has received a complaint (5)
+allegation: A brief description of the allegation made against a Member of Service in the NYPD, not cleaned (115)
+board_disposition: The CCRB's decision regarding a complaint against a Member of Service in the NYPD, not cleaned (11)
+cleaned_board_disposition: The CCRB's decision regarding a complaint against a Member of Service in the NYPD, cleaned for less variable types (3)
+rank_above_captain: The current rank of the Member of Service in the NYPD who has received a complaint cleaned into above captain or not (2)
+grouped_allegation: A description of the allegation made against a Member of Service in the NYPD, cleaned for less variable types (8)
 
 ## Sentences to Engineer
 In this notebook, we are reverse engineering five sentences from the story.
