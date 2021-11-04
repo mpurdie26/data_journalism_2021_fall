@@ -84,7 +84,7 @@ knitr::include_graphics(rep("images/ppp_datawrapper7.png"))
 Some publication systems allow for the embedding of HTML into a post or a story. Some don't. The only way to know is to ask someone at your publication. Every publication system on the planet, though, can publish an image. So there's always a way to export your chart as a PNG file, which you can upload like any photo.
 
 **Answer** Copy the url of the graphic you published here.
-https://datawrapper.dwcdn.net/HiDda/1/ 
+#https://datawrapper.dwcdn.net/HiDda/1/ 
 
 ### Task 8: Make a Choropleth Map
 
@@ -214,4 +214,4 @@ Ok, that looks better. Let's publish!
 
 **Task** Click the "Proceed" button until you get to the "Publish & Embed" tab, then click "Publish Now". Copy the URL and paste it below.
 **Answer** Put the URL of your map here.
-https://datawrapper.dwcdn.net/mXkcI/1/
+#https://datawrapper.dwcdn.net/mXkcI/1/
