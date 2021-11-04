@@ -1,7 +1,7 @@
 ---
 title: "pre_lab_10.Rmd"
-author: "derek willis"
-date: "9/23/2021"
+author: "michael purdie"
+date: "11/03/2021"
 output: html_document
 ---
 
@@ -84,6 +84,7 @@ knitr::include_graphics(rep("images/ppp_datawrapper7.png"))
 Some publication systems allow for the embedding of HTML into a post or a story. Some don't. The only way to know is to ask someone at your publication. Every publication system on the planet, though, can publish an image. So there's always a way to export your chart as a PNG file, which you can upload like any photo.
 
 **Answer** Copy the url of the graphic you published here.
+https://datawrapper.dwcdn.net/HiDda/1/ 
 
 ### Task 8: Make a Choropleth Map
 
@@ -97,6 +98,7 @@ maryland_ppp <- read_rds("data/pre_lab_10.rds")
 
 **Task** First, we'll create a dataframe that has county (jurisdiction) level counts of approved applications. Run the following code to do that. There are some mistakes in the data, so we're going to remove those with a filter after doing the counting.
 **Answer** Describe what the code below is doing and the output.
+It is giving the number of loans per Maryland county, with some inaccuracies.
 
 ```{r}
 md_counties <- maryland_ppp %>%
@@ -106,6 +108,7 @@ md_counties <- maryland_ppp %>%
 
 **Task** Let's deal with those seemingly extraneous records that don't appear to be MD PPP applications:
 **Answer** Describe what the code below is doing and the output.
+This cleans the inaccuracies in the Maryland counties dataset.
 
 ```{r}
 md_counties <- maryland_ppp %>%
@@ -135,6 +138,7 @@ Looks good, but there are two issues: Datawrapper expects a 5-digit FIPS code (t
 
 **Task** Generate full FIPS codes
 **Answer** Describe the contents of the new `fips_code` column
+Combines both parts of the fips code to make a 5-digit code.
 
 ```{r}
 md_fips <- md_fips %>% mutate(fips_code = str_c(state_code, county_code))
@@ -158,6 +162,7 @@ md_fips <- md_fips %>% mutate(match_county = str_to_upper(county)) %>%
 
 **Task** Now we'll join `md_counties` and `md_fips` together using our new `match_county` column:
 **Answer** Describe here what you see in `md_counties_with_fips`
+A combined dataset with county names, fips codes, and counts.
 
 ```{r}
 md_counties_with_fips <- md_counties %>%
@@ -193,6 +198,7 @@ You'll see that the map currently is of the whole nation, and we only have Maryl
 
 **Task** Look for "Hide regions without data" under Appearance, and click the slider icon to enable that feature. You should see a map zoomed into Maryland with some counties in various colors.
 **Answer** Describe the changes from the previous map
+It is now just a map of Maryland.
 
 But it's a little rough visually, so let's clean that up.
 
@@ -202,8 +208,10 @@ That's better, but check out the tooltip by hovering over a county. It's not sup
 
 **Task** Click the "Customize tooltips" button so it expands down. Change {{ fips }} to {{ county }} and {{ count }} to {{ FORMAT(count, "0,0.[00]")}}
 **Answer** Describe the changes from the previous map
+It shows county names and a clean count now,
 
 Ok, that looks better. Let's publish!
 
 **Task** Click the "Proceed" button until you get to the "Publish & Embed" tab, then click "Publish Now". Copy the URL and paste it below.
 **Answer** Put the URL of your map here.
+https://datawrapper.dwcdn.net/mXkcI/1/
