@@ -23,6 +23,7 @@ library(sf)
 library(janitor)
 library(tigris)
 library(tidycensus)
+library(lubridate)
 
 #API Census key
 census_api_key("b559c55dc9a86baaa9ab42174d2fa978a618dff1")
@@ -49,7 +50,54 @@ Then answer these questions:
 * Based on the map, what region of the state appears to have gotten more loans in this industry? What geographic pattern do you notice in the data?
 * Based on the table, what county got the highest total loan amount? What was the total amount per 100K population, the total amount of loans (not population adjusted), how many loans were there, and what's the population?
 
-**A1.** 
+**A1.**  According to the map, Richie County got the highest total amount of loans per 1000k population with $77,752,742.79, and according to the table, the highest total loan amount at $7,653,980.00, with a population of 9,844, and a total of 9 mining PPP loans. More mining in the Appalachian Mountains, and less people live there.
+
+``` {r}
+#create dataset that isolates West Virginia mining PPP loans
+wv_mining_ppp <- wv_ppp %>%
+  filter(str_detect(naics_code, "^21")) %>%
+  #get total amount of loans in dollar amount per county
+  group_by(project_county_name) %>%
+  summarize(
+    total_mining_ppp_per_county = sum(amount),
+    total_mining_ppp_loans_per_county = n()
+  )
+
+#using Census Key, pull WV county populations and geometry
+wv_county_population <- get_acs(geography = "county", 
+              variables = c(population = "B01001_001"), 
+              state = "WV",
+              geometry = TRUE)
+
+#rename columns in wv_county_population dataset and clean
+wv_county_population <- wv_county_population %>%
+  rename(project_county_name = NAME) %>%
+  mutate(project_county_name = toupper(str_remove_all(project_county_name,", West Virginia|County"))) %>%
+  mutate(project_county_name = str_trim(project_county_name,side="both")) %>%
+  rename(population = estimate) %>%
+  select(project_county_name, population, geometry)
+
+#join dataframes together
+wv_mining_ppp_per_100k <- wv_county_population %>%
+  left_join(wv_mining_ppp) %>%
+  #make tibble
+  as_tibble() %>%
+  #change NAs
+  mutate(total_mining_ppp_per_county = replace_na(total_mining_ppp_per_county,0)) %>%
+  mutate(total_mining_ppp_loans_per_county = replace_na(total_mining_ppp_loans_per_county,0)) %>%
+  #do math
+  mutate(mining_ppp_per_100k = total_mining_ppp_per_county/population*100000) %>%
+  arrange(desc(mining_ppp_per_100k))
+
+#display dataset
+wv_mining_ppp_per_100k
+
+#make map
+ggplot() + 
+  geom_sf(data=wv_mining_ppp_per_100k, aes(fill=mining_ppp_per_100k, geometry=geometry)) + 
+  theme_minimal() +
+  scale_fill_viridis_b(option="magma", trans = "log") 
+```
 
 **Q2.** You want to understand WHY the spatial pattern you saw above exists.  So you grab a shapefile with the latitude and longitude coordinates of every mine permit in West Virginia from the state Department of Environmental Protection. 
 
@@ -63,11 +111,43 @@ Make a map with a point for each one of these mine permits and put a blank map w
 
 What spatial pattern do you see? How does it compare to the spatial pattern in the first map you made?
 
-**A2.**
+**A2.** It kind of corresponds to the orange areas in the first map, as they are concentrated in the Appalachian Mountains.
+``` {r}
+#read url into dataframe
+wv_mines <- st_read("https://tagis.dep.wv.gov/arcgis/rest/services/WVDEP_enterprise/mining_reclamation/MapServer/0/query?where=1%3D1&outFields=*&geometry=&geometryType=esriGeometryEnvelope&inSR=4326&spatialRel=esriSpatialRelIntersects&outSR=4326&f=json")
+
+#mutate and filter for after Sept. 1, 2021 on WV mines dataframe
+wv_mines <- wv_mines %>%
+  #make a tibble
+  as_tibble() %>%
+  mutate(expiredate = ymd(expiredate)) %>%
+  filter(expiredate > "2021-09-01")
+
+#pull counties geometry from tigris
+counties <- counties()
+
+#filter for only WV counties
+wv_counties <- counties %>%
+  filter(STATEFP == "54")
+
+#plot for counties, then mines
+ggplot() + 
+  geom_sf(data=wv_counties, fill="white") + 
+  geom_sf(data=wv_mines, aes(geometry=geometry)) +
+  theme_minimal() 
+```
 
 **Q3.** To confirm the spatial comparison you identified in question 2, let's create a new map that layers the mine location points on top of our PPP choropleth map we created in question 1. What do you notice about the amount of mines in the county that has the highest total loan amount per 100K?
 
-**A3.**
+**A3.** There appears to only be one mine.
+``` {r}
+#plot for wv_mining_ppp_per_100k, then mines
+ggplot() + 
+  geom_sf(data=wv_mining_ppp_per_100k, aes(fill=mining_ppp_per_100k, geometry=geometry)) + 
+  geom_sf(data=wv_mines, aes(geometry=geometry)) +
+  theme_minimal() +
+  scale_fill_viridis_b(option="magma", trans = "log") 
+```
 
 **Q4.** Starting from the original WV ppp dataframe, examine the loans to companies in "Mining, Quarrying, and Oil and Gas Extraction" in the county with the highest total loan amount per 100K (you can use the table you created in question 1 to identify the top county)?
 * What single company accounts for the biggest chunk of the total loan amount? 
@@ -75,5 +155,12 @@ What spatial pattern do you see? How does it compare to the spatial pattern in t
 * How many jobs did they save, according to the data?
 * What's your hypothesis for why a company in their specific industry would need to seek a PPP loan during the pandemic?
 
-**A4.**
+**A4.** Hall Drilling, LLC accounts for $68,666,000. They are in the "drilling oil and gas wells" industry, and they saved 387 jobs with the loan. This company probably needed the funds to keep paying workings during the pandemic as energy consumption went down.
+``` {r}
+#using WV PPP data, filtering for Ritchie County and mining industry
+wv_ppp %>%
+  filter(str_detect(naics_code, "^21")) %>%
+  filter(project_county_name == "RITCHIE") %>%
+  arrange(desc(amount))
+```
 -30-
