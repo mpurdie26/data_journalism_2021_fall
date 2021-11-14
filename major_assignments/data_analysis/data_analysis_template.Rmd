@@ -44,5 +44,4 @@ In this section, describe the source of the data, write a basic data dictionary 
 # Load required data
 police_shootings <- read_csv("data/data-police-shootings-master/fatal-police-shootings-data.csv")
 homicides <- read_csv("data/data-homicides-master/homicide-data.csv")
-
 ```
