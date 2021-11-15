@@ -56,7 +56,7 @@ county_populations <- get_acs(geography = "county",
 
 #Clean required data
 #excludes territories from counties dataset
-counties %>%
+counties <- counties %>%
   filter(STATEFP < "57")
 #May need further cleaner later on during analysis
 ```
