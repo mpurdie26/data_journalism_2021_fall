@@ -78,8 +78,7 @@ In this notebook, we are researching five questions from these datasets.
 
 ``` {r}
 ggplot() + 
-  geom_sf(data=counties, fill="white") + 
-  theme_minimal() 
+  geom_sf(data=counties) 
 
 ```
 
