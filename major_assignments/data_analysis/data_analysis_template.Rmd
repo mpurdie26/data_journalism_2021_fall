@@ -48,7 +48,8 @@ In this section, describe the source of the data, write a basic data dictionary 
 police_shootings <- read_csv("data/data-police-shootings-master/fatal-police-shootings-data.csv")
 homicides <- read_csv("data/data-homicides-master/homicide-data.csv")
 
-#Load Census data 
+#Load Census data and county data from Tigris 
+counties <- counties()
 county_populations <- get_acs(geography = "county", 
               variables = c(population = "B01001_001"),
               geometry = TRUE)
@@ -73,8 +74,6 @@ In this notebook, we are researching five questions from these datasets.
 * **Analysis summary**: We probably won't use this question in the final project, just using it to visualize the data.
 
 ``` {r}
-counties <- counties()
-
 ggplot() + 
   geom_sf(data=counties, fill="white") + 
   theme_minimal() 
