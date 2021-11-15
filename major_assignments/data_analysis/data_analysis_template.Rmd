@@ -58,6 +58,9 @@ county_populations <- get_acs(geography = "county",
 #excludes territories from counties dataset
 counties <- counties %>%
   filter(STATEFP < "57")
+#not working... we need to convert longitude and latitude to a spacial point
+police_shootings %>%
+  st_point(geometry = c("longitude", "latitude"))
 #May need further cleaner later on during analysis
 ```
 
@@ -78,7 +81,9 @@ In this notebook, we are researching five questions from these datasets.
 
 ``` {r}
 ggplot() + 
-  geom_sf(data=counties) 
+  geom_sf(data=counties) +
+  geom_sf(data=police_shootings, aes(geometry=geometry)) +
+  theme_minimal() 
 
 ```
 
