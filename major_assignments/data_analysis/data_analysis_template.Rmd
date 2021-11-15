@@ -27,12 +27,15 @@ Loading required libraries for this analysis.
 ```{r echo=FALSE, message=FALSE}
 #essential libraries
 library(tidyverse)
-library(janitor)
-library(lubridate)
-#additional libraries 
+library(tidycensus)
 library(sf)
 library(tigris)
-library(tidycensus)
+#potential libraries 
+library(janitor)
+library(lubridate)
+
+#API Census key
+census_api_key("b559c55dc9a86baaa9ab42174d2fa978a618dff1")
 
 ```
 
@@ -41,7 +44,102 @@ library(tidycensus)
 In this section, describe the source of the data, write a basic data dictionary for data you are working with, and discuss any caveats or issues you discovered working with this data. 
 
 ```{r}
-# Load required data
+#Load required data
 police_shootings <- read_csv("data/data-police-shootings-master/fatal-police-shootings-data.csv")
 homicides <- read_csv("data/data-homicides-master/homicide-data.csv")
+
+#Load Census data 
+county_populations <- get_acs(geography = "county", 
+              variables = c(population = "B01001_001"),
+              geometry = TRUE)
+
+#Clean required data
+#May need further cleaner later on during analysis
+```
+
+#Brief Analysis of Loaded Data
+In looking at the police shootings data, everything looks relatively clean, so we don't foresee having to do any cleaning. We're choosing to focus on the geography of police shootings, so we need to use Census data in order to figure out where exactly these police shootings are happening, and if there are certain neighborhoods (ex: majority-minority or low income) that are more affected by police shootings. We'll likely need to form some kind of relationship between the lat/long coordinates in this dataset and data from Census tracts.
+ 
+#Data Dictionary
+Will get back to this at the end once we have a cleaned and finalized dataset. 
+
+## Sentences to Engineer
+In this notebook, we are researching five questions from these datasets.
+
+### Question 1
+
+* **Question text**: Are there geographical patterns 
+
+* **Analysis summary**: We probably won't use this question in the final project, just using it to visualize the data.
+
+``` {r}
+counties <- counties()
+
+ggplot() + 
+  geom_sf(data=counties, fill="white") + 
+  theme_minimal() 
+
+```
+
+### Question 2
+
+* **Question text**: 
+
+* **Analysis summary**: 
+
+``` {r}
+
+```
+
+### Question 3
+
+* **Question text**: Are there patterns regarding race and instances in which the victim was armed with a toy weapon? 
+
+* **Analysis summary**: 
+
+```{r}
+police_shootings_by_race <- police_shootings %>%
+  group_by(race) %>%
+  summarize(
+    total_per_race = n()
+  ) 
+    
+police_shootings_armed_with_toy <- police_shootings %>%
+  filter(str_detect(armed, "toy")) %>%
+  group_by(race) %>%
+  summarize(
+    total_armed_with_toy = n()
+  ) 
+
+police_shootings_armed_with_toy_per_race <- police_shootings_by_race %>%
+  left_join(police_shootings_armed_with_toy) %>%
+  mutate(total_armed_with_toy = replace_na(total_armed_with_toy,0)) %>%
+  mutate(percent_armed_with_toy_per_race = total_armed_with_toy/total_per_race*100) %>%
+  arrange(desc(percent_armed_with_toy_per_race))
+
+police_shootings_by_race
+police_shootings_armed_with_toy
+police_shootings_armed_with_toy_per_race
+
+#not finished, trying to figure out if i need to left_join bc ungroup() wouldnt work
+```
+
+### Question 4
+
+* **Question text**: 
+
+* **Analysis summary**: 
+
+``` {r}
+
+```
+
+### Question 5
+
+* **Question text**: 
+
+* **Analysis summary**: 
+
+``` {r}
+
 ```
