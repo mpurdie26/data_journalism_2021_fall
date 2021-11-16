@@ -46,6 +46,7 @@ In this section, describe the source of the data, write a basic data dictionary 
 ```{r}
 #Load required data
 police_shootings <- read_csv("data/data-police-shootings-master/fatal-police-shootings-data.csv")
+#Load potential data
 homicides <- read_csv("data/data-homicides-master/homicide-data.csv")
 
 #Load Census data and county data from Tigris 
@@ -58,9 +59,6 @@ county_populations <- get_acs(geography = "county",
 #excludes territories from counties dataset
 counties <- counties %>%
   filter(STATEFP < "57")
-#not working... we need to convert longitude and latitude to a spacial point
-police_shootings %>%
-  st_point(geometry = c("longitude", "latitude"))
 #May need further cleaner later on during analysis
 ```
 
@@ -70,17 +68,15 @@ In looking at the police shootings data, everything looks relatively clean, so w
 #Data Dictionary
 Will get back to this at the end once we have a cleaned and finalized dataset. 
 
-## Sentences to Engineer
-In this notebook, we are researching five questions from these datasets.
+### Analysis
 
-### Question 1
-
-* **Question text**: Are there geographical patterns 
+* **Question text**: Are there geographical patterns regarding police shootings? Do majority Black areas have a higher rate of total police shootings per total population?
 
 * **Analysis summary**: We probably won't use this question in the final project, just using it to visualize the data.
 
 ``` {r}
 ggplot() + 
+  geom_point(data=police_shootings, aes(x=longitude, y = latitude))
   geom_sf(data=counties) +
   geom_sf(data=police_shootings, aes(geometry=geometry)) +
   theme_minimal() 
@@ -128,24 +124,4 @@ police_shootings_armed_with_toy
 police_shootings_armed_with_toy_per_race
 
 #not finished, trying to figure out if i need to left_join bc ungroup() wouldnt work
-```
-
-### Question 4
-
-* **Question text**: 
-
-* **Analysis summary**: 
-
-``` {r}
-
-```
-
-### Question 5
-
-* **Question text**: 
-
-* **Analysis summary**: 
-
-``` {r}
-
 ```
