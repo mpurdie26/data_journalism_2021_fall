@@ -31,7 +31,7 @@ You install it the same way you do anything else -- `install.packages("ggrepel")
 **Task** Run the following code in the gray-colored codeblock below to load the libraries we'll use
 
 ```{r}
-install.packages("ggrepel")
+#install.packages("ggrepel")
 library(tidyverse)
 library(janitor)
 library(lubridate)
