@@ -50,7 +50,7 @@ police_shootings <- read_csv("data/data-police-shootings-master/fatal-police-sho
 homicides <- read_csv("data/data-homicides-master/homicide-data.csv")
 
 #Load Census data and county data from Tigris 
-counties <- counties()
+states <- states()
 county_populations <- get_acs(geography = "county", 
               variables = c(population = "B01001_001"),
               geometry = TRUE)
@@ -76,8 +76,8 @@ Will get back to this at the end once we have a cleaned and finalized dataset.
 
 ``` {r}
 ggplot() + 
-  geom_point(data=police_shootings, aes(x=longitude, y = latitude))
-  geom_sf(data=counties) +
+  geom_sf(data=states) +
+  geom_point(data=police_shootings, aes(x=longitude, y = latitude)) +
   geom_sf(data=police_shootings, aes(geometry=geometry)) +
   theme_minimal() 
 
