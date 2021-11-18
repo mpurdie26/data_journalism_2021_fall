@@ -282,7 +282,7 @@ Let's filter out Maryland first and create a line chart:
 
 ### Task 15: Filter on Maryland and create a line chart
 **Task** Run the following code and describe what the resulting chart shows
-**Answer**
+**Answer** Shows the cummulative amount of vaccinations for each Maryland county for each day.
 
 ```{r}
 maryland <- covid %>% filter(state == "Maryland")
@@ -294,7 +294,7 @@ The colors can be a little hard to make out, but when you have counties with a l
 
 ### Task 16: Switch the line chart to use a log scale
 **Task** Run the following code and describe what the resulting chart shows
-**Answer**
+**Answer** I'm not quite sure, very ugly. I think the amount of cases per county per day? Not sure whats doing on at the bottom.
 
 ```{r}
 ggplot() + geom_line(data=maryland, aes(x=date, y=cases, group=county, color=county)) + scale_y_continuous(trans="log10")
@@ -310,7 +310,7 @@ I'm adding one piece to the end to make joining this to a map easier and just re
 
 ### Task 17: Find the latest data for Maryland and join it to a shapefile of U.S. counties
 **Task** Run the following code. How many rows in the counties dataframe?
-**Answer**
+**Answer** 3233
 
 ```{r}
 current <- maryland %>% summarize(max(date))
@@ -323,7 +323,7 @@ Since we have every county in the United States in our counties map layer, we ca
 
 ### Task 18: Filter our data to just Maryland
 **Task** Run the following code. How many rows in the mdcounties dataframe?
-**Answer**
+**Answer** 24
 
 ```{r}
 mdcounties <- counties %>% filter(STATEFP == 24)
@@ -333,7 +333,7 @@ So now, we have a geographic dataframe that has both the county shapes and the n
 
 ### Task 19: Make a map
 **Task** Run the following code and describe what the map is showing.
-**Answer**
+**Answer** Number of cummulative cases in each Maryland county.
 
 ```{r}
 ggplot() +
