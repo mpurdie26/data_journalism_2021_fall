@@ -90,14 +90,15 @@ ggplot() +
 * **Analysis summary**: 
 
 ``` {r}
-read_rds("data/geocoded_results_1000.rds")
-read_rds("data/geocoded_results_1500.rds")
-read_rds("data/geocoded_results_2000.rds")
-read_rds("data/geocoded_results_2500.rds")
-read_rds("data/geocoded_results_3000.rds")
-read_rds("data/geocoded_results_3500.rds")
-read_rds("data/geocoded_results_4000.rds")
-read_rds("data/geocoded_results_4500.rds")
+data1 <- read_rds("data/geocoded_results_500.rds")
+data2 <- read_rds("data/geocoded_results_1000.rds")
+data3 <- read_rds("data/geocoded_results_1500.rds")
+data4 <- read_rds("data/geocoded_results_2000.rds")
+data5 <- read_rds("data/geocoded_results_2500.rds")
+data6 <- read_rds("data/geocoded_results_3000.rds")
+data7 <- read_rds("data/geocoded_results_3500.rds")
+data8 <- read_rds("data/geocoded_results_4000.rds")
+data9 <- read_rds("data/geocoded_results_4500.rds")
 
 test_census <- get_acs(geography = "tract",
                        variables = c(population = "B01001_001", 
@@ -112,11 +113,19 @@ test_census <- get_acs(geography = "tract",
                                      nh.pi = "B03002_007",
                                      multiple = "B03002_009",
                                      other = "B03002_008"),
-                       state = "MD",
+                       state = c("AL","AK","AZ","AR","CA","CO","CT","DE","FL","GA","HI","ID","IL","IN","IA","KS","KY","LA","ME","MD","MA","MI","MN","MS","MO","MT","NE","NV","NH","NJ","NM","NY","NC","ND","OH","OK","OR","PA","RI","SC","SD","TN","TX","UT","VT","VA","WA","WV","WI","WY"), 
+                       geometry = TRUE,
                        year = 2019)
 
-pivot_wider(test_census, names_from = variable, names_sep = ".", values_from = c(estimate, moe))
+#PIVOT
+test_census <- pivot_wider(test_census, names_from = variable, names_sep = ".", values_from = c(estimate, moe)) 
 
+#rename cloumn
+test_census <- rename(test_census, census_tracts_geoid = GEOID)
+
+#join
+test_join1 <- data1  %>%
+  inner_join(test_census, by=c("census_tracts_geoid"))
 ```
 
 ### Question 3
