@@ -119,12 +119,13 @@ test_census <- get_acs(geography = "tract",
 #PIVOT
 test_census <- pivot_wider(test_census, names_from = variable, names_sep = ".", values_from = c(estimate, moe)) 
 
-#rename cloumn
+#rename column
 test_census <- rename(test_census, census_tracts_geoid = GEOID)
 
 #join
-test_join1 <- data1  %>%
-  inner_join(test_census, by=c("census_tracts_geoid"))
+data1  %>%
+  left_join(test_census, by=c("census_tracts_geoid"))
+
 ```
 
 ### Question 3
