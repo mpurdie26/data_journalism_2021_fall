@@ -85,11 +85,37 @@ ggplot() +
 
 ### Question 2
 
-* **Question text**: 
+* **Question text**: testing geocode join
 
 * **Analysis summary**: 
 
 ``` {r}
+read_rds("data/geocoded_results_1000.rds")
+read_rds("data/geocoded_results_1500.rds")
+read_rds("data/geocoded_results_2000.rds")
+read_rds("data/geocoded_results_2500.rds")
+read_rds("data/geocoded_results_3000.rds")
+read_rds("data/geocoded_results_3500.rds")
+read_rds("data/geocoded_results_4000.rds")
+read_rds("data/geocoded_results_4500.rds")
+
+test_census <- get_acs(geography = "tract",
+                       variables = c(population = "B01001_001", 
+                                     median.gross.rent = "B25064_001",
+                                     median.household.income = "B19013_001",
+                                     rent.burden = "B25071_001",
+                                     white = "B03002_003",
+                                     af.am = "B03002_004",
+                                     hispanic = "B03002_012",
+                                     am.ind = "B03002_005",
+                                     asian = "B03002_006",
+                                     nh.pi = "B03002_007",
+                                     multiple = "B03002_009",
+                                     other = "B03002_008"),
+                       state = "MD",
+                       year = 2019)
+
+pivot_wider(test_census, names_from = variable, names_sep = ".", values_from = c(estimate, moe))
 
 ```
 
