@@ -90,6 +90,7 @@ ggplot() +
 * **Analysis summary**: 
 
 ``` {r}
+#geocoded data
 data1 <- read_rds("data/geocoded_results_500.rds")
 data2 <- read_rds("data/geocoded_results_1000.rds")
 data3 <- read_rds("data/geocoded_results_1500.rds")
@@ -100,6 +101,12 @@ data7 <- read_rds("data/geocoded_results_3500.rds")
 data8 <- read_rds("data/geocoded_results_4000.rds")
 data9 <- read_rds("data/geocoded_results_4500.rds")
 
+#join geocoded datasets 
+geocoded_data <- data1 %>%
+  left_join(data2, by=c("id", "name", "date", "manner_of_death", "armed", "age", "gender", "race", "city", "state", "signs_of_mental_illness", "threat_level", "flee", "body_camera", "longitude", "latitude", "is_geocoding_exact", "census_tracts_geoid")) %>%
+  left_join(data3, by=c("id", "name", "date", "manner_of_death", "armed", "age", "gender", "race", "city", "state", "signs_of_mental_illness", "threat_level", "flee", "body_camera", "longitude", "latitude", "is_geocoding_exact", "census_tracts_geoid"))
+
+#pulling info from census
 test_census <- get_acs(geography = "tract",
                        variables = c(population = "B01001_001", 
                                      median.gross.rent = "B25064_001",
@@ -125,6 +132,8 @@ test_census <- rename(test_census, census_tracts_geoid = GEOID)
 #join
 data1  %>%
   left_join(test_census, by=c("census_tracts_geoid"))
+
+
 
 ```
 
