@@ -46,20 +46,6 @@ In this section, describe the source of the data, write a basic data dictionary 
 ```{r}
 #Load required data
 police_shootings <- read_csv("data/data-police-shootings-master/fatal-police-shootings-data.csv")
-#Load potential data
-homicides <- read_csv("data/data-homicides-master/homicide-data.csv")
-
-#Load Census data and county data from Tigris 
-states <- states()
-county_populations <- get_acs(geography = "county", 
-              variables = c(population = "B01001_001"),
-              geometry = TRUE)
-
-#Clean required data
-#excludes territories from counties dataset
-counties <- counties %>%
-  filter(STATEFP < "57")
-#May need further cleaner later on during analysis
 ```
 
 #Brief Analysis of Loaded Data
