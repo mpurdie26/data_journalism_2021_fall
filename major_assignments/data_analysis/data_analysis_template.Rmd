@@ -100,11 +100,13 @@ data6 <- read_rds("data/geocoded_results_3000.rds")
 data7 <- read_rds("data/geocoded_results_3500.rds")
 data8 <- read_rds("data/geocoded_results_4000.rds")
 data9 <- read_rds("data/geocoded_results_4500.rds")
+data10 <-read_rds("data/geocoded_results_5000.rds")
+data11 <-read_rds("data/geocoded_results_5500.rds")
+data12 <-read_rds("data/geocoded_results_6000.rds")
+data13 <-read_rds("data/geocoded_results_6410.rds")
 
 #join geocoded datasets 
-geocoded_data <- data1 %>%
-  left_join(data2, by=c("id", "name", "date", "manner_of_death", "armed", "age", "gender", "race", "city", "state", "signs_of_mental_illness", "threat_level", "flee", "body_camera", "longitude", "latitude", "is_geocoding_exact", "census_tracts_geoid")) %>%
-  left_join(data3, by=c("id", "name", "date", "manner_of_death", "armed", "age", "gender", "race", "city", "state", "signs_of_mental_illness", "threat_level", "flee", "body_camera", "longitude", "latitude", "is_geocoding_exact", "census_tracts_geoid"))
+census_data <- rbind(data1,data2,data3,data4,data5,data6,data7,data8,data9,data10,data11,data12,data13)
 
 #pulling info from census
 test_census <- get_acs(geography = "tract",
@@ -130,9 +132,8 @@ test_census <- pivot_wider(test_census, names_from = variable, names_sep = ".", 
 test_census <- rename(test_census, census_tracts_geoid = GEOID)
 
 #join
-data1  %>%
+shootings_w_acs <- census_data  %>%
   left_join(test_census, by=c("census_tracts_geoid"))
-
 
 
 ```
