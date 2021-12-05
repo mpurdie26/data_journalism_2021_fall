@@ -219,9 +219,10 @@ majority_black_neighborhood_shootings
 
 ``` {r}
 ## income breakdown !! 
-    ## Pew Research Center defines low income households as those earning below $48,500 
+    ## Pew Research Center defines low-income households as those earning below $48,500 
+    ## Pew Research Center defines high-income households as those earning above $145,500
     
-## general breakdown first:
+## general low-income breakdown first:
 low_income_shootings <- new_shootings_w_acs %>%
   filter(estimate.median.household.income < 48500)
 
@@ -255,17 +256,51 @@ filter(race == "B", estimate.median.household.income < 48500)
 low_income_neighborhood_shootings_black
   ##865 people
 
-## total people shot in majority low-income neighborhoods
-majority_low_income_neighborhood_shootings <- new_shootings_w_acs %>%
-filter(estimate.median.household.income < 48500)
-majority_low_income_neighborhood_shootings
-  ##2924 people
-
 1108/2924 = 0.378933*100 
     = 37.9% of people shot in majority low-income neighborhoods are white. 
 
 865/2924 = 0.2958276*100
     = 29.6% of people shot in majority low-income neighborhoods are black. 
+
+## general high-income breakdown
+high_income_shootings <- new_shootings_w_acs %>%
+  filter(estimate.median.household.income > 145500)
+
+high_income_shootings %>% 
+   summarize(
+   count = n() 
+  ) 
+  ## 59 shootings out of 6409 were in high-income neighborhoods 
+
+(59/6409) * 100
+  = 0.92% of shootings were in high-income neighborhoods.
+
+## where are the specific places:
+high_income_shootings %>%
+  group_by(NAME) %>%
+   summarize(
+   count = n() 
+  ) %>%
+  arrange(desc(count))
+  ##none of these seem to be significant, except maybe top 3 in Texas?
+
+## white people shot in majority high-income neighborhoods
+high_income_neighborhood_shootings_white <- new_shootings_w_acs %>%
+filter(race == "W", estimate.median.household.income > 145500)
+high_income_neighborhood_shootings_white
+  ##33 people
+
+## black people shot in majority high-income neighborhoods
+high_income_neighborhood_shootings_black <- new_shootings_w_acs %>%
+filter(race == "B", estimate.median.household.income > 145500)
+high_income_neighborhood_shootings_black
+  ##13 people
+
+33/59 = 0.378933*100 
+    = 55.9% of people shot in majority high-income neighborhoods are white. 
+
+13/59 = 0.2958276*100
+    = 22.0% of people shot in majority high-income neighborhoods are black. 
 
 ```
 
