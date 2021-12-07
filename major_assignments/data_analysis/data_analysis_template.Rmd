@@ -337,7 +337,7 @@ grouped_shootings_w_acs %>%
     = 51.8% of all U.S. census tracts are low income and majority white.
 
 #3. How does the answer to number 1 compare to the answer in number 2?
-There is a higher percentage of U.S. census tracts that are low income and majority white than there are shootings in those areas
+There is a higher percentage of U.S. census tracts that are low income and majority white than there are shootings that happen in those areas
   
 # Using poverty
 
