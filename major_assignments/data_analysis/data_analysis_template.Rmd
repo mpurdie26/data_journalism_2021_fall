@@ -97,8 +97,16 @@ shootings_w_acs <- shootings_w_geoid  %>%
 new_shootings_w_acs <- read_rds("data/new_shootings_w_acs.rds")
 
 #adding columns
+new_shootings_w_acs <- new_shootings_w_acs %>%
+  mutate(tract_majority_black = case_when((estimate.af.am/estimate.population > .5) ~ "y",
+                                          (estimate.af.am/estimate.population <= .5) ~ "n")) %>%
+  mutate(tract_majority_white = case_when((estimate.white/estimate.population > .5) ~ "y",
+                                          (estimate.white/estimate.population <= .5) ~ "n")) %>%
+  mutate(tract_majority_poor = case_when((estimate.poverty_level/estimate.population > .5) ~ "y",
+                                         (estimate.poverty_level/estimate.population <= .5) ~ "n"))
 
-
+#write it into new file for groupmates
+write_rds(new_shootings_w_acs, "data/new_shootings_w_acs.rds")
 
 ```
 
