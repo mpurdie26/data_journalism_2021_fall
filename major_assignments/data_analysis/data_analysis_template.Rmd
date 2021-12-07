@@ -107,6 +107,9 @@ new_shootings_w_acs <- new_shootings_w_acs %>%
   mutate(tract_low_income = case_when((estimate.median.household.income > 48500) ~ "y",
                                          (estimate.median.household.income <= 48500) ~ "n"))
 
+#write file
+write_rds(new_shootings_w_acs, "data/new_shootings_w_acs.rds")
+
 #updated from shreya pt 2 lol
 grouped_shootings_w_acs <- read_rds("data/grouped_shootings_w_acs.rds")
 ```
@@ -344,7 +347,7 @@ There is a higher percentage of U.S. census tracts that are low income and major
 ## All majority poor tracts
 #1. What percentage of shootings happen in tracts where the majority of the population is below the poverty line? 
 new_shootings_w_acs %>%
-  filter(tract_majority_poor == "y") %>%
+  filter(shooting_y_n == "y" & tract_majority_poor == "y") %>%
   summarize(count = n())
   #90 
 90/6409 = .01404275*100
