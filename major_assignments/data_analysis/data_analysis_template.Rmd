@@ -93,7 +93,11 @@ census_data <- rename(census_data, census_tracts_geoid = GEOID)
 shootings_w_acs <- shootings_w_geoid  %>%
   left_join(census_data, by=c("census_tracts_geoid"))
 
+#updated from shreya lol
 new_shootings_w_acs <- read_rds("data/new_shootings_w_acs.rds")
+
+#adding columns
+
 
 
 ```
