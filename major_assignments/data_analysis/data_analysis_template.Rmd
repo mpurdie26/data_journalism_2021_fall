@@ -450,3 +450,48 @@ new_shootings_w_acs %>%
   #132 toy  shooting in white neighborhoods
   = 3.67% of shootings in white neighborhoods involve the victim being armed with a toy.
 ```
+
+## "Signs of Mental Illness" Analysis
+
+```{r}
+police_shootings_by_race <- new_shootings_w_acs %>%
+  group_by(race) %>%
+  summarize(
+    total_per_race = n()
+  ) 
+    
+police_shootings_w_mental_illness <- new_shootings_w_acs %>%
+  filter(signs_of_mental_illness == "TRUE") %>%
+  group_by(race) %>%
+  summarize(
+    total_with_mental_illness = n()
+  ) 
+
+police_shootings_w_mental_illness_per_race <- police_shootings_by_race %>%
+  left_join(police_shootings_w_mental_illness) %>%
+  mutate(total_with_mental_illness = replace_na(total_with_mental_illness,0)) %>%
+  mutate(percent_with_mental_illness_per_race = total_with_mental_illness/total_per_race*100) %>%
+  arrange(desc(percent_with_mental_illness_per_race))
+
+police_shootings_w_mental_illness_per_race
+
+new_shootings_w_acs %>%
+  filter(tract_majority_black == "y" & signs_of_mental_illness == "TRUE")
+  #102 toy shootings in black neighborhoods
+  = 15.0% of shootings in Black neighborhoods involve the victim having mental illness.
+
+new_shootings_w_acs %>%
+  filter(tract_majority_white == "y" & signs_of_mental_illness == "TRUE")
+  #922 toy  shooting in white neighborhoods
+  = 26.0% of shootings in white neighborhoods involve the victim having mental illness.
+
+```
+
+## Gender in black vs white neighborhoods Analysis
+
+``` {r}
+police_shootings_by_gender <- new_shootings_w_acs %>%
+  group_by(gender)
+
+police_shootings_by_gender
+```
