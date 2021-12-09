@@ -517,7 +517,8 @@ new_shootings_w_acs %>%
   filter(tract_majority_white == "y" & gender == "M")
   #3424 Men shot in majority white neighborhoods
   3424/6113 = 56.0% of men are shot in majority white neighborhoods
-grouped_shootings_w_acs %>%
+
+  grouped_shootings_w_acs %>%
   filter(tract_majority_black == "y")
   #6034/73056 = 8.3% of tracts are majority Black
 
@@ -530,4 +531,54 @@ grouped_shootings_w_acs %>%
 
 only 56% of men are shot in majority black neighborhoods, but 67.1% % of tracts are majority black 
   .56/.671 = the rate of men getting shot in majority black neighborhoods is 0.835
+  
+  
+  
+  
+new_shootings_w_acs <- new_shootings_w_acs %>%
+  mutate(pct_black = (estimate.af.am/estimate.population*100)) %>%
+  mutate(pct_white = (estimate.white/estimate.population*100)) 
+
+black_male_new_shootings_w_acs <- new_shootings_w_acs %>%
+  filter(race == "B" & gender == "M") %>%
+  group_by(NAME) %>%
+  summarize(
+    pct_black,
+    pct_white,
+    count = n()
+  )
+
+white_male_new_shootings_w_acs <- new_shootings_w_acs %>%
+  filter(race == "W" & gender == "M") %>%
+  group_by(NAME) %>%
+  summarize(
+    pct_black,
+    pct_white,
+    count = n()
+  )
+
+#white male with pct_white
+white_male_new_shootings_w_acs %>%
+  ggplot() +
+  geom_point(aes(x=pct_white,y=count)) +
+  geom_smooth(aes(x=pct_white,y=count), method="lm")
+
+#white male with pct_black
+white_male_new_shootings_w_acs %>%
+  ggplot() +
+  geom_point(aes(x=pct_black,y=count)) +
+  geom_smooth(aes(x=pct_black,y=count), method="lm")
+
+#black male with pct_black
+black_male_new_shootings_w_acs %>%
+  ggplot() +
+  geom_point(aes(x=pct_black,y=count)) +
+  geom_smooth(aes(x=pct_black,y=count), method="lm")
+
+#black male with pct_white
+black_male_new_shootings_w_acs %>%
+  ggplot() +
+  geom_point(aes(x=pct_white,y=count)) +
+  geom_smooth(aes(x=pct_white,y=count), method="lm")
+
 ```
