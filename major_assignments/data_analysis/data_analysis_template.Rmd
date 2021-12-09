@@ -351,7 +351,7 @@ new_shootings_w_acs %>%
   summarize(count = n())
   #90 
 90/6409 = .01404275*100
-    = 1.4% of shootings happen in tracts where the majority of people are below the poverty line..
+    = 1.4% of shootings happen in tracts where the majority of people are below the poverty line.
 
 #2. What percentage of all U.S. census tracts have a majority of the population below the poverty line?
 grouped_shootings_w_acs %>%
@@ -363,22 +363,71 @@ grouped_shootings_w_acs %>%
 
 #3. How does the answer to number 1 compare to the answer in number 2?
 ```
+## Post-George Floyd death vs pre-
 
-### IGNORE THIS LOL
-### Question 3
+``` {r}
+new_shootings_w_acs %>%
+  filter(date > "2020-05-22") %>%
+  summarize(count = n())
+  #1322 shootings after May 22, 2020
 
-* **Question text**: Are there patterns regarding race and instances in which the victim was armed with a toy weapon? 
+new_shootings_w_acs %>%
+  filter(race == "B" & date > "2020-05-22") %>%
+  summarize(count = n())
+  #239 black people shot after May 22, 2020
 
-* **Analysis summary**: 
+  239/1322 = 18.1%
+  
+new_shootings_w_acs %>%
+  filter(date <= "2020-05-22") %>%
+  summarize(count = n())
+  #5087 shootings before May 22, 2020
+
+new_shootings_w_acs %>%
+  filter(race == "B" & date <= "2020-05-22") %>%
+  summarize(count = n())
+  #1250 black people shot before May 22, 2020
+  
+  1250/5087 = 24.6%
+  Percentage of Black people shot in police shootings decreased by 6.5% after the death of George Floyd.
+  
+new_shootings_w_acs %>%
+  filter(date > "2020-05-22" & tract_majority_black == "y") %>%
+  summarize(count = n())
+  #125 shootings after May 22, 2020 in majority black neighborhoods
+
+new_shootings_w_acs %>%
+  filter(race == "B" & date > "2020-05-22" & tract_majority_black == "y") %>%
+  summarize(count = n())
+  #69 black people shot after May 22, 2020 in majority black neighborhoods
+
+  69/125 = 55.2%
+  
+new_shootings_w_acs %>%
+  filter(date <= "2020-05-22" & tract_majority_black == "y") %>%
+  summarize(count = n())
+  #557 shootings before May 22, 2020 in majority black neighborhoods
+
+new_shootings_w_acs %>%
+  filter(race == "B" & date <= "2020-05-22" & tract_majority_black == "y") %>%
+  summarize(count = n())
+  #440 black people shot before May 22, 2020 in majority black neighborhoods
+  
+  440/557 = 79.0%
+  Percentage of Black people shot in police shootings in majority Black neighborhoods decreased by 23.8% after the death of George Floyd.
+
+```
+
+## "Armed with Toy" Analysis
 
 ```{r}
-police_shootings_by_race <- police_shootings %>%
+police_shootings_by_race <- new_shootings_w_acs %>%
   group_by(race) %>%
   summarize(
     total_per_race = n()
   ) 
     
-police_shootings_armed_with_toy <- police_shootings %>%
+police_shootings_armed_with_toy <- new_shootings_w_acs %>%
   filter(str_detect(armed, "toy")) %>%
   group_by(race) %>%
   summarize(
@@ -395,5 +444,13 @@ police_shootings_by_race
 police_shootings_armed_with_toy
 police_shootings_armed_with_toy_per_race
 
-#not finished, trying to figure out if i need to left_join bc ungroup() wouldnt work
+new_shootings_w_acs %>%
+  filter(tract_majority_black == "y" & str_detect(armed, "toy"))
+  #16 toy shootings in black neighborhoods
+  = 2.35% of shootings in Black neighborhoods involve the victim being armed with a toy. 
+
+new_shootings_w_acs %>%
+  filter(tract_majority_white == "y" & str_detect(armed, "toy"))
+  #132
+  = 3.67% of shootings in white neighborhoods involve the victim being armed with a toy.
 ```
