@@ -491,7 +491,43 @@ new_shootings_w_acs %>%
 
 ``` {r}
 police_shootings_by_gender <- new_shootings_w_acs %>%
-  group_by(gender)
+  group_by(gender) %>%
+  summarize(
+    total_per_gender = n()
+  ) 
 
 police_shootings_by_gender
+  
+new_shootings_w_acs %>%
+  filter(tract_majority_black == "y" & gender == "F")
+  #26 women shot in majority black neighborhoods
+  26/292 = 8.9% of women are shot in majority black neighborhoods
+
+new_shootings_w_acs %>%
+  filter(tract_majority_white == "y" & gender == "F")
+  #168 women shot in majority white neighborhoods
+  168/292 = 57.5% of women are shot in majority white neighborhoods
+
+new_shootings_w_acs %>%
+  filter(tract_majority_black == "y" & gender == "M")
+  #653 Men shot in majority black neighborhoods
+  653/6113 = 10.7% of men are shot in majority black neighborhoods
+
+new_shootings_w_acs %>%
+  filter(tract_majority_white == "y" & gender == "M")
+  #3424 Men shot in majority white neighborhoods
+  3424/6113 = 56.0% of men are shot in majority white neighborhoods
+grouped_shootings_w_acs %>%
+  filter(tract_majority_black == "y")
+  #6034/73056 = 8.3% of tracts are majority Black
+
+grouped_shootings_w_acs %>%
+  filter(tract_majority_white == "y")
+  #49024/73056 = 67.1% of tracts are majority White
+
+10.7% of men are shot in majority black neighborhoods, but only 8.3% of tracts are majority black 
+  .107/.083 = the rate of men getting shot in majority black neighborhoods is 1.289
+
+only 56% of men are shot in majority black neighborhoods, but 67.1% % of tracts are majority black 
+  .56/.671 = the rate of men getting shot in majority black neighborhoods is 0.835
 ```
