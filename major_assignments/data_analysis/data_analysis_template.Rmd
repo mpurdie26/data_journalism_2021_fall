@@ -518,7 +518,7 @@ new_shootings_w_acs %>%
   #3424 Men shot in majority white neighborhoods
   3424/6113 = 56.0% of men are shot in majority white neighborhoods
 
-  grouped_shootings_w_acs %>%
+grouped_shootings_w_acs %>%
   filter(tract_majority_black == "y")
   #6034/73056 = 8.3% of tracts are majority Black
 
@@ -529,10 +529,16 @@ grouped_shootings_w_acs %>%
 10.7% of men are shot in majority black neighborhoods, but only 8.3% of tracts are majority black 
   .107/.083 = the rate of men getting shot in majority black neighborhoods is 1.289
 
-only 56% of men are shot in majority black neighborhoods, but 67.1% % of tracts are majority black 
-  .56/.671 = the rate of men getting shot in majority black neighborhoods is 0.835
+only 56% of men are shot in majority white neighborhoods, but 67.1% % of tracts are majority white 
+  .56/.671 = the rate of men getting shot in majority white neighborhoods is 0.835
+ 
+10.7% of men are shot in majority black neighborhoods, and 56% of men are shot in majority white neighborhoods.
+  .107/.56 = the rate of men getting shot in majority black tracts to majority white tracts is 0.191 to 1.
   
+8.3% of tracts are majority black, and 67.1% of tracts are majority white     
+  .083/.671 = the rate of majority black tracts to majority white tracts is 0.124 to 1.
   
+  .191/.124 = proportionally, there are 1.54 men shot in black tracts for every 1 man shot in white tracts
   
   
 new_shootings_w_acs <- new_shootings_w_acs %>%
