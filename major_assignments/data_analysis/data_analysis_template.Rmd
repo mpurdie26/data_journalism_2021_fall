@@ -440,10 +440,6 @@ police_shootings_armed_with_toy_per_race <- police_shootings_by_race %>%
   mutate(percent_armed_with_toy_per_race = total_armed_with_toy/total_per_race*100) %>%
   arrange(desc(percent_armed_with_toy_per_race))
 
-police_shootings_by_race
-police_shootings_armed_with_toy
-police_shootings_armed_with_toy_per_race
-
 new_shootings_w_acs %>%
   filter(tract_majority_black == "y" & str_detect(armed, "toy"))
   #16 toy shootings in black neighborhoods
@@ -451,6 +447,6 @@ new_shootings_w_acs %>%
 
 new_shootings_w_acs %>%
   filter(tract_majority_white == "y" & str_detect(armed, "toy"))
-  #132
+  #132 toy  shooting in white neighborhoods
   = 3.67% of shootings in white neighborhoods involve the victim being armed with a toy.
 ```
