@@ -589,3 +589,40 @@ black_male_new_shootings_w_acs %>%
   geom_smooth(aes(x=pct_white,y=count), method="lm")
 
 ```
+
+## National Per Capita Analysis
+
+``` {r}
+grouped_shootings_w_acs %>%
+  mutate(total_white = sum(grouped_shootings_w_acs$estimate.white)) %>%
+    #197,100,373 total white Americans
+  mutate(total_black = sum(grouped_shootings_w_acs$estimate.af.am)) %>%
+    #39,977,554 total Black Americans
+  mutate(total_AAPI = sum(grouped_shootings_w_acs$estimate.asian + grouped_shootings_w_acs$estimate.nh.pi)) %>%
+    #18,249,465 total AAPI
+  mutate(total_indigenous = sum(grouped_shootings_w_acs$estimate.am.ind)) %>%
+    #2,160,378 total Indigenous Americans
+  mutate(total_hispanic = sum(grouped_shootings_w_acs$estimate.hispanic)) %>%
+    #58,479,370 total Hispanic Americans
+  mutate(total_other = sum(grouped_shootings_w_acs$estimate.other + grouped_shootings_w_acs$estimate.multiple)) %>%
+    #8,730,655 total "other" or mixed Americans
+  
+  grouped_shootings_w_acs
+
+national_grouped_shootings_w_acs
+  
+  
+police_shootings_by_race
+
+
+
+
+
+```
+
+## State Per Capita Analysis
+
+``` {r}
+
+
+```
