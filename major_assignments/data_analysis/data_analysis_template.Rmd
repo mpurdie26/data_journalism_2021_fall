@@ -665,9 +665,24 @@ state_police_shootings_by_race_w_acs <- state_police_shootings_by_race_w_acs %>%
               race == "H" ~ count/estimate.hispanic*100000,
               race == "N" ~ count/estimate.am.ind*100000,
               race == "O" ~ count/(estimate.other+estimate.multiple)*100000)
-  )
+  ) 
 
+#Indigenous observations per capita
 state_police_shootings_by_race_w_acs %>%
+  filter(race == "N") %>%
+  select(state, race, estimate.am.ind, moe.am.ind, state_per_capita_shootings_per_race) %>%
+  arrange(desc(state_per_capita_shootings_per_race))
+
+#Black observations per capita
+state_police_shootings_by_race_w_acs %>%
+  filter(race == "B") %>%
+  select(state, race, estimate.af.am, moe.af.am, state_per_capita_shootings_per_race) %>%
+  arrange(desc(state_per_capita_shootings_per_race))
+
+#White observations per capita
+state_police_shootings_by_race_w_acs %>%
+  filter(race == "W") %>%
+  select(state, race, estimate.white, moe.white, state_per_capita_shootings_per_race) %>%
   arrange(desc(state_per_capita_shootings_per_race))
  
 ```
