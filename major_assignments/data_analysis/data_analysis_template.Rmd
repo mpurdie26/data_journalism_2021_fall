@@ -616,6 +616,7 @@ black_male_new_shootings_w_acs %>%
 ## National Per Capita Analysis
 
 ``` {r}
+#making a dataframe that has the total national population for each race
 national_pop_per_race <- grouped_shootings_w_acs %>%
   mutate(W = (sum(grouped_shootings_w_acs$estimate.white))) %>%
     #197,100,373 total white Americans
@@ -633,8 +634,9 @@ national_pop_per_race <- grouped_shootings_w_acs %>%
   distinct() %>%
   pivot_longer(cols = (1:6), names_to = "race", values_to = "total_pop_per_race")
   
+#joining dataframe with police_shootings_by_race to generate national per capita per race
 national_police_shootings_by_race_w_acs <- police_shootings_by_race %>%
-  full_join(national_grouped_shootings_w_acs) %>%
+  full_join(national_pop_per_race) %>%
   mutate(national_per_capita_shootings_per_race = total_shot_per_race/total_pop_per_race*100000)
 
 national_police_shootings_by_race_w_acs
@@ -644,14 +646,17 @@ national_police_shootings_by_race_w_acs
 ## State Per Capita Analysis
 
 ``` {r}
+#making a dataframe that has state police shootings by race
 state_police_shootings_by_race <- new_shootings_w_acs  %>%
   group_by(state, race) %>%
   summarize(count = n()) %>%
   distinct() 
 
+#joining dataframe with state_census_data
 state_police_shootings_by_race_w_acs <-
   merge(x=state_police_shootings_by_race,y=state_census_data,by="state",all.x=TRUE)
 
+#using newest dataframe to generate state per capita per race
 state_police_shootings_by_race_w_acs <- state_police_shootings_by_race_w_acs %>%
   mutate(state_per_capita_shootings_per_race = 
     case_when(race == "W" ~ count/estimate.white*100000,
@@ -664,6 +669,5 @@ state_police_shootings_by_race_w_acs <- state_police_shootings_by_race_w_acs %>%
 
 state_police_shootings_by_race_w_acs %>%
   arrange(desc(state_per_capita_shootings_per_race))
-
  
 ```
