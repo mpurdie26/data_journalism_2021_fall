@@ -130,6 +130,12 @@ state_census_data <- get_acs(geography = "state",
 #PIVOT
 state_census_data <- pivot_wider(state_census_data, names_from = variable, names_sep = ".", values_from = c(estimate, moe)) 
 
+#making state names abbreviations for joining later
+state_census_data <- rename(state_census_data, state = NAME) 
+state_census_data$state <- state.abb[match(state_census_data$state, state.name)]  
+
+  
+
 ```
 
 #Brief Analysis of Loaded Data
@@ -610,7 +616,7 @@ black_male_new_shootings_w_acs %>%
 ## National Per Capita Analysis
 
 ``` {r}
-national_grouped_shootings_w_acs <- grouped_shootings_w_acs %>%
+national_pop_per_race <- grouped_shootings_w_acs %>%
   mutate(W = (sum(grouped_shootings_w_acs$estimate.white))) %>%
     #197,100,373 total white Americans
   mutate(B = (sum(grouped_shootings_w_acs$estimate.af.am))) %>%
@@ -627,22 +633,37 @@ national_grouped_shootings_w_acs <- grouped_shootings_w_acs %>%
   distinct() %>%
   pivot_longer(cols = (1:6), names_to = "race", values_to = "total_pop_per_race")
   
-police_shootings_by_race %>%
+national_police_shootings_by_race_w_acs <- police_shootings_by_race %>%
   full_join(national_grouped_shootings_w_acs) %>%
-  mutate(per_capita_shootings_per_race = total_shot_per_race/total_pop_per_race*100000)
+  mutate(national_per_capita_shootings_per_race = total_shot_per_race/total_pop_per_race*100000)
+
+national_police_shootings_by_race_w_acs
 
 ```
 
 ## State Per Capita Analysis
 
 ``` {r}
-police_shootings_by_state_and_race <- new_shootings_w_acs  %>%
-  mutate(GEOID = str_sub(census_tracts_geoid, start=1L, end=2L)) %>%
+state_police_shootings_by_race <- new_shootings_w_acs  %>%
   group_by(state, race) %>%
-  summarize(count = n(), GEOID) %>%
-  distinct()
-  
-police_shootings_by_state_and_race %>%
-  full_join(state_census_data)
-police_shootings_by_state_and_race
+  summarize(count = n()) %>%
+  distinct() 
+
+state_police_shootings_by_race_w_acs <-
+  merge(x=state_police_shootings_by_race,y=state_census_data,by="state",all.x=TRUE)
+
+state_police_shootings_by_race_w_acs <- state_police_shootings_by_race_w_acs %>%
+  mutate(state_per_capita_shootings_per_race = 
+    case_when(race == "W" ~ count/estimate.white*100000,
+              race == "B" ~ count/estimate.af.am*100000,
+              race == "A" ~ count/(estimate.asian+estimate.nh.pi)*100000,
+              race == "H" ~ count/estimate.hispanic*100000,
+              race == "N" ~ count/estimate.am.ind*100000,
+              race == "O" ~ count/(estimate.other+estimate.multiple)*100000)
+  )
+
+state_police_shootings_by_race_w_acs %>%
+  arrange(desc(state_per_capita_shootings_per_race))
+
  
+```
