@@ -66,7 +66,7 @@ data13 <-read_rds("data/geocoded_results_6410.rds")
 #join geocoded datasets 
 shootings_w_geoid <- rbind(data1,data2,data3,data4,data5,data6,data7,data8,data9,data10,data11,data12,data13)
 
-#pulling info from census
+#pulling info from census (tract level)
 census_data <- get_acs(geography = "tract",
                        variables = c(population = "B01001_001", 
                                      median.gross.rent = "B25064_001",
@@ -112,6 +112,24 @@ write_rds(new_shootings_w_acs, "data/new_shootings_w_acs.rds")
 
 #updated from shreya pt 2 lol
 grouped_shootings_w_acs <- read_rds("data/grouped_shootings_w_acs.rds")
+
+#pulling info from census (state level)
+state_census_data <- get_acs(geography = "state",
+                       variables = c(population = "B01001_001", 
+                                     white = "B03002_003",
+                                     af.am = "B03002_004",
+                                     hispanic = "B03002_012",
+                                     am.ind = "B03002_005",
+                                     asian = "B03002_006",
+                                     nh.pi = "B03002_007",
+                                     multiple = "B03002_009",
+                                     other = "B03002_008"),
+                       state = c("AL","AK","AZ","AR","CA","CO","CT","DE","FL","GA","HI","ID","IL","IN","IA","KS","KY","LA","ME","MD","MA","MI","MN","MS","MO","MT","NE","NV","NH","NJ","NM","NY","NC","ND","OH","OK","OR","PA","RI","SC","SD","TN","TX","UT","VT","VA","WA","WV","WI","WY"), 
+                       year = 2019)
+
+#PIVOT
+state_census_data <- pivot_wider(state_census_data, names_from = variable, names_sep = ".", values_from = c(estimate, moe)) 
+
 ```
 
 #Brief Analysis of Loaded Data
@@ -456,7 +474,7 @@ new_shootings_w_acs %>%
 police_shootings_by_race <- new_shootings_w_acs %>%
   group_by(race) %>%
   summarize(
-    total_per_race = n()
+    total_shot_per_race = n()
   ) 
     
 police_shootings_w_mental_illness <- new_shootings_w_acs %>%
@@ -469,7 +487,7 @@ police_shootings_w_mental_illness <- new_shootings_w_acs %>%
 police_shootings_w_mental_illness_per_race <- police_shootings_by_race %>%
   left_join(police_shootings_w_mental_illness) %>%
   mutate(total_with_mental_illness = replace_na(total_with_mental_illness,0)) %>%
-  mutate(percent_with_mental_illness_per_race = total_with_mental_illness/total_per_race*100) %>%
+  mutate(percent_with_mental_illness_per_race = total_with_mental_illness/total_shot_per_race*100) %>%
   arrange(desc(percent_with_mental_illness_per_race))
 
 police_shootings_w_mental_illness_per_race
@@ -593,33 +611,38 @@ black_male_new_shootings_w_acs %>%
 
 ``` {r}
 national_grouped_shootings_w_acs <- grouped_shootings_w_acs %>%
-  mutate(total_white = (sum(grouped_shootings_w_acs$estimate.white))) %>%
+  mutate(W = (sum(grouped_shootings_w_acs$estimate.white))) %>%
     #197,100,373 total white Americans
-  mutate(total_black = (sum(grouped_shootings_w_acs$estimate.af.am))) %>%
+  mutate(B = (sum(grouped_shootings_w_acs$estimate.af.am))) %>%
     #39,977,554 total Black Americans
-  mutate(total_AAPI = (sum(grouped_shootings_w_acs$estimate.asian + grouped_shootings_w_acs$estimate.nh.pi))) %>%
+  mutate(A = (sum(grouped_shootings_w_acs$estimate.asian + grouped_shootings_w_acs$estimate.nh.pi))) %>%
     #18,249,465 total AAPI
-  mutate(total_indigenous = (sum(grouped_shootings_w_acs$estimate.am.ind))) %>%
+  mutate(N = (sum(grouped_shootings_w_acs$estimate.am.ind))) %>%
     #2,160,378 total Indigenous Americans
-  mutate(total_hispanic = (sum(grouped_shootings_w_acs$estimate.hispanic))) %>%
+  mutate(H = (sum(grouped_shootings_w_acs$estimate.hispanic))) %>%
     #58,479,370 total Hispanic Americans
-  mutate(total_other = (sum(grouped_shootings_w_acs$estimate.other + grouped_shootings_w_acs$estimate.multiple))) %>%
-    #8,730,655 total "other" or mixed Americans
+  mutate(O = (sum(grouped_shootings_w_acs$estimate.other + grouped_shootings_w_acs$estimate.multiple))) %>%
+    #8,730,655 total "other" or mixed Americans 
+  select(W, B, A, N, H, O) %>%
+  distinct() %>%
+  pivot_longer(cols = (1:6), names_to = "race", values_to = "total_pop_per_race")
   
-national_grouped_shootings_w_acs
-  
-  
-police_shootings_by_race
-
-
-
-
+police_shootings_by_race %>%
+  full_join(national_grouped_shootings_w_acs) %>%
+  mutate(per_capita_shootings_per_race = total_shot_per_race/total_pop_per_race*100000)
 
 ```
 
 ## State Per Capita Analysis
 
 ``` {r}
-
-
-```
+police_shootings_by_state_and_race <- new_shootings_w_acs  %>%
+  mutate(GEOID = str_sub(census_tracts_geoid, start=1L, end=2L)) %>%
+  group_by(state, race) %>%
+  summarize(count = n(), GEOID) %>%
+  distinct()
+  
+police_shootings_by_state_and_race %>%
+  full_join(state_census_data)
+police_shootings_by_state_and_race
+ 
