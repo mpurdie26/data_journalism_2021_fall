@@ -122,9 +122,8 @@ In looking at the police shootings data, everything looks relatively clean, so w
 ``` {r}
 ## first looking at data for highest percentage african american tracts: 
 black_neighborhood_shootings <- new_shootings_w_acs %>%
-  mutate(
-    pct_black = (estimate.af.am/estimate.population) * 100)  %>%
-    filter(pct_black > 50) %>%
+  mutate(pct_black = (estimate.af.am/estimate.population) * 100)  %>%
+  filter(pct_black > 50) %>%
   select(name, age, date, race, city, state, NAME, pct_black) %>%
   arrange(desc(pct_black))
 
@@ -593,22 +592,20 @@ black_male_new_shootings_w_acs %>%
 ## National Per Capita Analysis
 
 ``` {r}
-grouped_shootings_w_acs %>%
-  mutate(total_white = sum(grouped_shootings_w_acs$estimate.white)) %>%
+national_grouped_shootings_w_acs <- grouped_shootings_w_acs %>%
+  mutate(total_white = (sum(grouped_shootings_w_acs$estimate.white))) %>%
     #197,100,373 total white Americans
-  mutate(total_black = sum(grouped_shootings_w_acs$estimate.af.am)) %>%
+  mutate(total_black = (sum(grouped_shootings_w_acs$estimate.af.am))) %>%
     #39,977,554 total Black Americans
-  mutate(total_AAPI = sum(grouped_shootings_w_acs$estimate.asian + grouped_shootings_w_acs$estimate.nh.pi)) %>%
+  mutate(total_AAPI = (sum(grouped_shootings_w_acs$estimate.asian + grouped_shootings_w_acs$estimate.nh.pi))) %>%
     #18,249,465 total AAPI
-  mutate(total_indigenous = sum(grouped_shootings_w_acs$estimate.am.ind)) %>%
+  mutate(total_indigenous = (sum(grouped_shootings_w_acs$estimate.am.ind))) %>%
     #2,160,378 total Indigenous Americans
-  mutate(total_hispanic = sum(grouped_shootings_w_acs$estimate.hispanic)) %>%
+  mutate(total_hispanic = (sum(grouped_shootings_w_acs$estimate.hispanic))) %>%
     #58,479,370 total Hispanic Americans
-  mutate(total_other = sum(grouped_shootings_w_acs$estimate.other + grouped_shootings_w_acs$estimate.multiple)) %>%
+  mutate(total_other = (sum(grouped_shootings_w_acs$estimate.other + grouped_shootings_w_acs$estimate.multiple))) %>%
     #8,730,655 total "other" or mixed Americans
   
-  grouped_shootings_w_acs
-
 national_grouped_shootings_w_acs
   
   
