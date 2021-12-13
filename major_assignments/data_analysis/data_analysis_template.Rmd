@@ -124,7 +124,7 @@ state_census_data <- get_acs(geography = "state",
                                      nh.pi = "B03002_007",
                                      multiple = "B03002_009",
                                      other = "B03002_008"),
-                       state = c("AL","AK","AZ","AR","CA","CO","CT","DE","FL","GA","HI","ID","IL","IN","IA","KS","KY","LA","ME","MD","MA","MI","MN","MS","MO","MT","NE","NV","NH","NJ","NM","NY","NC","ND","OH","OK","OR","PA","RI","SC","SD","TN","TX","UT","VT","VA","WA","WV","WI","WY"), 
+                       state = c("AL","AK","AZ","AR","CA","CO","CT","DC","DE","FL","GA","HI","ID","IL","IN","IA","KS","KY","LA","ME","MD","MA","MI","MN","MS","MO","MT","NE","NV","NH","NJ","NM","NY","NC","ND","OH","OK","OR","PA","RI","SC","SD","TN","TX","UT","VT","VA","WA","WV","WI","WY"), 
                        year = 2019)
 
 #PIVOT
@@ -133,8 +133,7 @@ state_census_data <- pivot_wider(state_census_data, names_from = variable, names
 #making state names abbreviations for joining later
 state_census_data <- rename(state_census_data, state = NAME) 
 state_census_data$state <- state.abb[match(state_census_data$state, state.name)]  
-
-  
+state_census_data$state <- replace_na(state_census_data$state, "DC")
 
 ```
 
@@ -670,19 +669,25 @@ state_police_shootings_by_race_w_acs <- state_police_shootings_by_race_w_acs %>%
 #Indigenous observations per capita
 state_police_shootings_by_race_w_acs %>%
   filter(race == "N") %>%
-  select(state, race, estimate.am.ind, moe.am.ind, state_per_capita_shootings_per_race) %>%
+  select(state, race, count, estimate.am.ind, state_per_capita_shootings_per_race) %>%
   arrange(desc(state_per_capita_shootings_per_race))
 
 #Black observations per capita
 state_police_shootings_by_race_w_acs %>%
   filter(race == "B") %>%
-  select(state, race, estimate.af.am, moe.af.am, state_per_capita_shootings_per_race) %>%
-  arrange(desc(state_per_capita_shootings_per_race))
+  select(state, race, count, estimate.af.am, state_per_capita_shootings_per_race) %>%
+  arrange(desc(state_per_capita_shootings_per_race)) 
 
 #White observations per capita
 state_police_shootings_by_race_w_acs %>%
   filter(race == "W") %>%
-  select(state, race, estimate.white, moe.white, state_per_capita_shootings_per_race) %>%
+  select(state, race, count, estimate.white, state_per_capita_shootings_per_race) %>%
   arrange(desc(state_per_capita_shootings_per_race))
+
+#observations per capita for DC, MO, IL, and NJ
+state_police_shootings_by_race_w_acs %>%
+  filter((race == "B" | race == "W") & (state == "MO" | state == "DC" | state == "IL" | state == "NJ")) %>%
+  select(state, race, count, estimate.af.am, estimate.white, state_per_capita_shootings_per_race) 
  
+
 ```
