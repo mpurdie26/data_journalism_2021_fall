@@ -44,19 +44,19 @@ CLEANING DATA: We created a for loop to reverse geocode the shootings based on l
 
 ### loading the files from batch_job.r 
 
-data1 <- read_rds("data/new_geocoded_results_500.rds")
-data2 <- read_rds("data/new_geocoded_results_1000.rds")
-data3 <- read_rds("data/new_geocoded_results_1500.rds")
-data4 <- read_rds("data/new_geocoded_results_2000.rds")
-data5 <- read_rds("data/new_geocoded_results_2500.rds")
-data6 <- read_rds("data/new_geocoded_results_3000.rds")
-data7 <- read_rds("data/new_geocoded_results_3500.rds")
-data8 <- read_rds("data/new_geocoded_results_4000.rds")
-data9 <- read_rds("data/new_geocoded_results_4500.rds")
-data10 <- read_rds("data/new_geocoded_results_5000.rds")
-data11 <- read_rds("data/new_geocoded_results_5500.rds")
-data12 <- read_rds("data/new_geocoded_results_6000.rds")
-data13 <- read_rds("data/new_geocoded_results_6410.rds")
+data1 <- read_rds("data/geocoded_results_500.rds")
+data2 <- read_rds("data/geocoded_results_1000.rds")
+data3 <- read_rds("data/geocoded_results_1500.rds")
+data4 <- read_rds("data/geocoded_results_2000.rds")
+data5 <- read_rds("data/geocoded_results_2500.rds")
+data6 <- read_rds("data/geocoded_results_3000.rds")
+data7 <- read_rds("data/geocoded_results_3500.rds")
+data8 <- read_rds("data/geocoded_results_4000.rds")
+data9 <- read_rds("data/geocoded_results_4500.rds")
+data10 <-read_rds("data/geocoded_results_5000.rds")
+data11 <-read_rds("data/geocoded_results_5500.rds")
+data12 <-read_rds("data/geocoded_results_6000.rds")
+data13 <-read_rds("data/geocoded_results_6410.rds")
 
 ## binding rows (making a full dataset)
 shootings_w_geoid <- bind_rows(data1, data2, data3, data4, data5, data6, data7, data8, data9, data10, data11, data12, data13, .id = NULL)
@@ -98,7 +98,7 @@ census_data <- get_acs(geography = "tract",
                                      multiple = "B03002_009",
                                      poverty_level ="B06012_002",
                                      other = "B03002_008"),
-                       state = state_list, 
+                       state = c("AL","AK","AZ","AR","CA","CO","CT","DC","DE","FL","GA","HI","ID","IL","IN","IA","KS","KY","LA","ME","MD","MA","MI","MN","MS","MO","MT","NE","NV","NH","NJ","NM","NY","NC","ND","OH","OK","OR","PA","RI","SC","SD","TN","TX","UT","VT","VA","WA","WV","WI","WY"), 
                        year = 2019)
 
 
@@ -315,32 +315,51 @@ join <- pct_all_tracts_state %>%
 ## Let's do some further digging in each state. 
 
 ### IL -->  ## in what tracts are the most shootings happening?
+grouped_shootings_w_acs %>%
+  filter(state == "IL" & shooting_y_n == "y") %>%
+  arrange(desc(count))
+  #7 tracts have 2 shootings, 107 have 1 shooting, which doesn't seem significant
 
   ## what's the demographic breakdown of those tracts?
+  #5 of the 7 are majority black
+  #3 of the 7 are majority poor
 
   ## anything interesting about police departments in that area (this is a google question)
 
 ### DC --> in what tracts are the most shootings happening?
-dc_pct_tracts_with_shootings_state <- pct_tracts_with_shootings_state %>%
-  filter(state == "DC") 
-dc_pct_all_tracts_state <- pct_all_tracts_state %>%
-  filter(state == "DC")
+grouped_shootings_w_acs %>%
+  filter(state == "DC" & shooting_y_n == "y") %>%
+  arrange(desc(count))
+  #1 tract has 2 shooting, 12 have 1 shooting, which doesn't seem, significant
 
   ## what's the demographic breakdown of those tracts?
+  #the 1 is majority black and poor
 
   ## anything interesting about police departments in that area (this is a google question)
 
 
 ### MO --> in what tracts are the most shootings happening?
-
+grouped_shootings_w_acs %>%
+  filter(state == "MO" & shooting_y_n == "y") %>%
+  arrange(desc(count))
+  #8 tracts have 2 shootings, 98 have 1, which doesn't seem significant
+  
   ## what's the demographic breakdown of those tracts?
+  #3 of the 8 are majority black
+  #5 of the 8 are majority poor
 
   ## anything interesting about police departments in that area (this is a google question)
 
 
 ### NJ --> in what tracts are the most shootings happening? 
+grouped_shootings_w_acs %>%
+  filter(state == "NJ" & shooting_y_n == "y") %>%
+  arrange(desc(count))
+  #3 tracts have 2 shootings, 65 have 1, which doesn't seem significant
 
   ## what's the demographic breakdown of those tracts?
+  #1 of the 3 are majority black
+  #2 of the 3 are majority poor
 
   ## anything interesting about police departments in that area (this is a google question)
 
