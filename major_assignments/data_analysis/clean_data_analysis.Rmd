@@ -453,18 +453,15 @@ largest_counties_maj_black_poor_shootings_w_per_capita <- largest_counties_maj_b
 
 #Analysis
 largest_counties_maj_black_poor_shootings_w_per_capita %>%
-  arrange(desc(difference_in_shootings))
-  #there is a .0473 difference in shootings in Philidelphia with black people being shot at a rate 5.63x that of white people
-  #there is a .0148 difference in shootings in Orange County with black people being shot at a rate 2.89x that of white people
-  #there is a .0057 difference in shootings in Franklin County with black people being shot at a rate 6.18x that of white people
-  #there is a .0473 difference in shootings in LA with black people being shot at a rate 4.43x that of white people
-  #there is a .0473 difference in shootings in Tarrant County with black people being shot at a rate 2.69x that of white people
+  arrange(difference_in_shootings)
+  #there is a 19.34% difference in shootings in Will County with black people being shot at a rate 17.18x that of white people
+  #there is a 20.39% difference in shootings in Marion County with black people being shot at a rate 4x that of white people
+
 largest_counties_maj_black_poor_shootings_w_per_capita %>%
-  filter(NAME == "Jackson County, Missouri")
   arrange(desc(county_per_capita_shootings_per_race))
   #Oklahoma County has the highest rate of per capita shootings for Black people, which is 5.52x that of white people
   #Jackson County has the second highest rate of per capita shootings for Black people, which is 5.52x that of white people
-  #Franklin County has the third highest rate of per capita shootings for Black people, which is 2.69x that of white people
+  #Franklin County has the third highest rate of per capita shootings for Black people, which is 6.18x that of white people
   #LA has the fifth highest rate of per capita shootings for Black people, which is 4.43x that of white people
   
 ```
