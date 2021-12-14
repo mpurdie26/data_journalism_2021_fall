@@ -136,8 +136,6 @@ grouped_shootings_w_acs <- grouped_shootings_w_acs %>%
   mutate(tract_low_income = case_when((estimate.median.household.income > 48500) ~ "y",
                                          (estimate.median.household.income <= 48500) ~ "n"))
 
-
-
 ##individual shooting dataset
 new_shootings_w_acs <- shootings_w_geoid %>%
   left_join(census_data_with_state, by=c("census_tracts_geoid")) 
@@ -154,6 +152,23 @@ new_shootings_w_acs <- new_shootings_w_acs %>%
                                          (estimate.median.household.income <= 48500) ~ "n"))
 
 new_shootings_w_acs <- read_rds("data/new_shootings_w_acs.rds")
+
+#pulling info from census (county level)
+county_census_data <- get_acs(geography = "county",
+                       variables = c(population = "B01001_001", 
+                                     white = "B03002_003",
+                                     af.am = "B03002_004",
+                                     hispanic = "B03002_012",
+                                     am.ind = "B03002_005",
+                                     asian = "B03002_006",
+                                     nh.pi = "B03002_007",
+                                     multiple = "B03002_009",
+                                     other = "B03002_008"),
+                       state = c("AL","AK","AZ","AR","CA","CO","CT","DC","DE","FL","GA","HI","ID","IL","IN","IA","KS","KY","LA","ME","MD","MA","MI","MN","MS","MO","MT","NE","NV","NH","NJ","NM","NY","NC","ND","OH","OK","OR","PA","RI","SC","SD","TN","TX","UT","VT","VA","WA","WV","WI","WY"), 
+                       year = 2019)
+
+#PIVOT
+county_census_data <- pivot_wider(county_census_data, names_from = variable, names_sep = ".", values_from = c(estimate, moe)) 
 
 ```
 
@@ -243,7 +258,7 @@ state_by_poverty_black <- grouped_shootings_w_acs %>%
   arrange(desc(pct_shootings))
 ## DC, MD, and IL topping the list again
 
-### GENERAL TAKEAWAY: seems as though in some states, low-income/high-povrty and black neighborhoods
+### GENERAL TAKEAWAY: seems as though in some states, low-income/high-poverty and black neighborhoods
 
 ### FURTHER ANALYSIS: let's compare percentages of the majority-poor/black populations of all tracts within each state with the percentages of tracts with shootings. 
 
@@ -394,10 +409,6 @@ large_pop_counties <- rename(large_pop_counties, county_geoid = GEOID, populatio
 
 #arranging  
 top_100_largest_counties <- large_pop_counties %>%
-  separate(NAME, into=c("county", "state") , sep=",") %>%
-  mutate(state = str_trim(state, side="both"))
-
-top_100_largest_counties <- top_100_largest_counties %>%
   arrange(desc(population)) %>%
   head(100)
 
@@ -409,8 +420,36 @@ largest_counties_maj_black_poor_shootings <- top_100_largest_counties %>%
   
 write_rds(largest_counties_maj_black_poor_shootings, "data/shootings_in_black_poor_counties.rds")         
 
-
 ### Here's a per-capita analysis. 
+#making a dataframe that has county police shootings by race
+county_police_shootings_by_race <- new_shootings_w_acs  %>%
+  separate(NAME, into=c("tract", "county", "state") , sep=", ") %>%
+  mutate(NAME = paste(county, state, sep=", ")) %>%
+  group_by(NAME, race) %>%
+  summarize(count = n()) %>%
+  distinct() 
+
+#joining dataframe with county_census_data
+county_police_shootings_by_race_w_acs <- 
+  merge(x=county_police_shootings_by_race, y=county_census_data, by.x="NAME", by.y="NAME", all.x=TRUE, all.y=TRUE, sort=TRUE) %>%
+  filter(!is.na(count))
+
+#using newest dataframe to generate county per capita per race
+county_police_shootings_by_race_w_acs <- county_police_shootings_by_race_w_acs %>%
+  mutate(county_per_capita_shootings_per_race = 
+    case_when(race == "W" ~ count/estimate.white*100000,
+              race == "B" ~ count/estimate.af.am*100000,
+              race == "A" ~ count/(estimate.asian+estimate.nh.pi)*100000,
+              race == "H" ~ count/estimate.hispanic*100000,
+              race == "N" ~ count/estimate.am.ind*100000,
+              race == "O" ~ count/(estimate.other+estimate.multiple)*100000)
+  ) %>% filter(!is.na(race)) %>%
+  select(NAME, race, count, estimate.af.am, estimate.white, county_per_capita_shootings_per_race) 
+
+#Joining per capita dataset to largest_counties_maj_black_poor_shootings
+largest_counties_maj_black_poor_shootings_w_per_capita <- largest_counties_maj_black_poor_shootings %>%
+  left_join(county_police_shootings_by_race_w_acs) %>%
+  select(NAME, race, count, estimate.af.am, estimate.white, county_per_capita_shootings_per_race, pct_all_maj_poor_black, pct_shootings_maj_black_poor, difference_in_shootings) 
 
 
 ```
