@@ -1,0 +1,272 @@
+---
+title: "Reverse Engineering Project"
+author: "michael purdie"
+date: "10/10/21"
+output:
+  html_document:
+    theme: cerulean
+    highlight: pygments
+    toc: true
+    toc_float:
+      collapsed: true
+      smooth_scroll: false
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Introduction 
+
+In this notebook, we are reverse engineering the story, [Over a Dozen Black and Latino Men Accused a Cop of Humiliating, Invasive Strip Searches. The NYPD Kept Promoting Him.](https://www.propublica.org/article/over-a-dozen-black-and-latino-men-accused-a-cop-of-humiliating-invasive-strip-searches-the-nypd-kept-promoting-him)
+
+## Load libraries
+
+Loading required libraries for this analysis.
+
+```{r echo=FALSE, message=FALSE}
+#load tidyverse
+library(tidyverse)
+#load janitor
+library(janitor)
+#load lubridate
+library(lubridate)
+#load readxl
+library(readxl)
+
+```
+
+## Load and Cleaning Data
+
+In this section, describe the source of the data, write a basic data dictionary for data you are working with, and discuss any caveats or issues you discovered working with this data. 
+
+```{r}
+# Load required data
+allegations <- read_csv("data/CCRB-Complaint-Data_202007271729/allegations_202007271729.csv")
+allegation_description <- read_excel("data/CCRB-Complaint-Data_202007271729/CCRB Data Layout Table.xlsx")
+
+#cleaning data
+cleaned_allegations <- allegations %>%
+  #new cleaned board_disposition column
+  mutate(
+    cleaned_board_disposition = case_when(
+      str_detect(board_disposition, "^S") ~ "Substantiated",
+      TRUE ~ board_disposition
+    )
+  ) %>%
+  #new column that identifies officers that are currently a higher rank than captain
+  mutate(
+    rank_above_captain = if_else(
+      rank_now == 'Deputy Inspector' | 
+      rank_now == 'Inspector' | 
+      rank_now == 'Deputy Chief' | 
+      rank_now == 'Assistant Chief' | 
+      rank_now == 'Bureau Chief' | 
+      rank_now == 'Police Comissioner' | 
+      rank_now == 'Chiefs and other ranks', "Yes", "No")
+  ) %>%
+  #new grouped_allegations column
+  mutate(
+    grouped_allegation = case_when(
+      str_detect(allegation, "search|Search|Searched") ~ "Property Entries and Searches",
+      str_detect(allegation, "Physical|Force|Push|Dragged|Punch|club|Beat|Pepper|Club") ~ "Force",
+      str_detect(allegation, "Threat|threat") ~ "Threat",
+      str_detect(allegation, "stop|Stop|Frisk|Question") ~ "Stop, Question, and Frisk",
+      str_detect(allegation, "Word|Curse|Words|tone|Black|Hispanic|Discourtesy|Action") ~ "Language and Discourtesy",
+      str_detect(allegation, "Retaliatory|Arrest|Detention") ~ "Retaliatory Arrests and Summons",
+      str_detect(allegation, "Abuse|Refusal|Property") ~ "Other Abuse of Authority",
+      TRUE ~ "Other"
+    )
+  )
+
+
+```
+
+## Data Dictionary
+Our data dictionary describes what each variable (column name) means in the cleaned_allegations dataframe and gives the number of variable types for each variables. The only variables outlined in the dictionary are the ones used in order to reverse engineer the article.
+
+The following structure is used for our data dictionary:
+variable_name: Description of variable (# of variable types)
+
+unique_mos_id: The unique identification number given to each Member of Service in the NYPD (3996)
+first_name: The first name of the Member of Service in the NYPD who has received a complaint, limited to 10 characters (1217)
+last_name: The last name of the Member of Service in the NYPD who has received a complaint, limited to 10 characters (2835)
+rank_now: The current rank of the Member of Service in the NYPD who has received a complaint (8)
+mos_ethnicity: The ethnicity of the Member of Service in the NYPD who has received a complaint (5)
+allegation: A brief description of the allegation made against a Member of Service in the NYPD, not cleaned (115)
+board_disposition: The CCRB's decision regarding a complaint against a Member of Service in the NYPD, not cleaned (11)
+cleaned_board_disposition: The CCRB's decision regarding a complaint against a Member of Service in the NYPD, cleaned for less variable types (3)
+rank_above_captain: The current rank of the Member of Service in the NYPD who has received a complaint cleaned into above captain or not (2)
+grouped_allegation: A description of the allegation made against a Member of Service in the NYPD, cleaned for less variable types (8)
+
+## Sentences to Engineer
+In this notebook, we are reverse engineering five sentences from the story.
+
+### Sentence 1
+
+* **Sentence text**: “A dozen of those high-ranking officers have three or more complaints with substantiated allegations; 10 are white. Five have reached the rank of deputy inspector, the lowest promoted at the commissioner’s discretion; all are white.”
+
+* **Analysis summary**: My analysis did not confirm the results from the article, but I believe this is due to the fact that the data has been updated since. I found that there were 25 high-ranking officers with three or more complaints, not a dozen, and 17 were White, not 10. Also, there were 11 high-ranking officers with three or more complaints that are now a deputy inspector, and they are not all White. In regard to format, I narrowed down the data to the appropriate requirements, then grouped and summarized to obtain the number of total complaints for each officer. Finally, I filtered for officers with more than two complaints.
+
+```{r}
+#High-ranking officers with three or more complaints
+cleaned_allegations %>%
+  filter(rank_above_captain == "Yes") %>%
+  filter(cleaned_board_disposition == "Substantiated") %>%
+  group_by(unique_mos_id, first_name, last_name, rank_now, mos_ethnicity) %>%
+  summarize(
+    total_allegations = n()
+  ) %>%
+    ungroup() %>%
+    filter(total_allegations > 2) %>%
+    arrange(desc(total_allegations)) %>%
+    summarize(
+          total_high_ranking = n()
+        )
+
+#White high-ranking officers with three or more complaints
+cleaned_allegations %>%
+  filter(rank_above_captain == "Yes") %>%
+  filter(cleaned_board_disposition == "Substantiated") %>%
+  filter(mos_ethnicity == "White") %>%
+  group_by(unique_mos_id, first_name, last_name, rank_now, mos_ethnicity) %>%
+    summarize(
+      total_allegations = n()
+    ) %>%
+    ungroup() %>%  
+    filter(total_allegations > 2) %>%
+      arrange(desc(total_allegations)) %>%
+      summarize(
+        total_high_ranking_white = n()
+       )
+
+
+#High-ranking officers with three or more complaints that have reached the rank of deputy inspector
+cleaned_allegations %>%
+  filter(rank_now == "Deputy Inspector") %>%
+  filter(cleaned_board_disposition == "Substantiated") %>%
+  group_by(unique_mos_id, first_name, last_name, rank_now, mos_ethnicity) %>%
+    summarize(
+      total_allegations = n()
+    ) %>%
+      ungroup() %>%
+      filter(total_allegations > 2) %>%
+      arrange(desc(total_allegations)) %>%
+      summarize(
+        total_deputy_inspector = n()
+      )
+
+```
+
+### Sentence 2
+
+* **Sentence text**: “Eighty-six of the roughly 420 officers in the department who currently hold a rank above captain — running precincts and other large commands and overseeing hundreds of officers — have tallied at least one misconduct allegation that was substantiated by the CCRB, meaning that investigators amassed enough evidence of offenses, ranging from bad language to pistol whippings, to say that they happened and broke patrol guidelines. The most common involved improper property entries and searches.”
+
+* **Analysis summary**: In this section of code, we began by looking into the allegations by rank, filtering for ranks above captain and substantiated claims from the new cleaned columns. Then, I grouped by officer and displayed a count, allowing us to reach the conclusion that 81 of around 420 officers in the department who hold a rank above captain have had at least one misconduct allegation that was substantiated by the CCRB. The most common misconduct allegation was in fact imporoper proterty entries and searches, but this could have been different if the allegations were cleaned in a different format.
+
+```{r}
+#number of high-ranking officers with at least one substantiated misconduct allegation
+cleaned_allegations %>%
+  filter(rank_above_captain == "Yes") %>%
+  filter(cleaned_board_disposition == "Substantiated") %>%
+  group_by(unique_mos_id, first_name, last_name, rank_now, mos_ethnicity) %>%
+  summarize(
+    total_allegations = n()
+  )  %>%
+  ungroup() %>%
+  summarize(
+        total_high_ranking_substantiated = n()
+      )
+
+#most common misconduct allegation
+cleaned_allegations %>%
+  filter(rank_above_captain == "Yes") %>%
+  filter(cleaned_board_disposition == "Substantiated") %>%
+  group_by(grouped_allegation) %>%
+  summarize(
+    count = n()
+  ) %>%
+  arrange(desc(count))
+```
+
+### Sentence 3
+
+* **Sentence text**: “Of at least 77 allegations made against him in 26 separate CCRB complaints, 29 were unsubstantiated; five were “unfounded,” meaning investigators concluded the incident never took place; and 27 were “exonerated,” meaning the conduct fell within patrol guidelines.”
+
+* **Analysis summary**: In order to confirm/deny this statement, we needed to see how many claims Christopher McCormack had, so we filtered using his ID (18589) to develop a new data frame called mccormack_allegations. Using this dataframe, we filtered for unsubstantiated claims first, returning a result of 29. Then we tried for exonerated claims, which returned 27. Unfounded claims were not present in the dataset provided, so we cannot evaluate that point further; however, we confimred the other results from the sentence.
+
+
+```{r}
+#make new dataset that shows only Christopher McCormack's allegations
+#Christopher McCormack's unique_mos_id is 18589
+mccormack_allegations <- cleaned_allegations %>%
+  filter(unique_mos_id == 18589)
+
+#number of unsubstantiated allegations for Christopher McCormack
+mccormack_allegations %>% 
+  filter(cleaned_board_disposition == "Unsubstantiated") %>%
+  group_by(unique_mos_id) %>%
+  summarize(
+    unsubstantiated_count = n()
+  )
+
+#unfounded claims were not entered into the dataset
+
+#number of exonerated allegations for Christopher McCormack
+mccormack_allegations %>% 
+  filter(cleaned_board_disposition == "Exonerated") %>%
+  group_by(unique_mos_id) %>%
+  summarize(
+    exonerated_count = n()
+  )
+
+```
+
+### Sentence 4
+
+* **Sentence text**: “But many of the officers also said that it’s possible to be an effective cop without so many complaints. An overwhelming majority of the city’s 36,000 officers do not have a single substantiated complaint on their records; only 1 in 9 does.”
+
+* **Analysis summary**: For this sentence, we began by creating an entirely new dataset, called officers_with_complaints, that would return the total number of officers with at least one substantiated complaint.  First, we took the original dataframe and  filtered for substantiated allegations in our new cleaned_board_disposition column, then used distinct to return only the 'unique_mos_id', 'first_name', 'last_name' and 'rank_now' columns. After this, we used a summarize function to get the total number of officers with at least one substantiated complaint, which we then divided by the total number of officers (36,000). Our result was .1111, which is equal to 1 in 9, confirming the results from the story.
+
+```{r}
+#make new dataset that gives total number of officers with at least one substantiated complaints
+officers_with_complaints <- cleaned_allegations %>%
+  filter(cleaned_board_disposition == "Substantiated") %>%
+  distinct(unique_mos_id, first_name, last_name, rank_now)
+
+#number of officers with at least one substantiated complaint/total number of officers
+officers_with_complaints %>%
+    summarize(
+      total = n()/36000
+    ) 
+
+#1 in 9 = .1111
+
+```
+
+### Sentence 5
+
+* **Sentence text**: There isn't really a sentence from the story, but I'd like you to answer this question: The story focused on Christopher McCormack. Use data analysis to justify that decision. Why does he stand out as newsworthy, from all of the people they could have selected? Why, do you think, did the reporters single him out for an in-depth story. Write code to support your argument.
+
+* **Analysis summary**: In our last section, we used code to show why Christopher McCormack stands out as newsworthy. In order to do this, we used our dataframe to filter for all officers above the rank of captain, or in other words, high-ranking officers. Then we grouped by officer to count the total number of allegations for each, in which Christopher McCormack is the second to appear of the sorted list. Not only does he have the second most number of allegations, but he is higher ranking than the only person with more than him, making him more newsworthy as the question as to why he was continuously promoted becomes apparent.
+
+```{r}
+# Put code to reverse engineer sentence here
+cleaned_allegations %>%
+  filter(rank_above_captain == "Yes") %>%
+  group_by(unique_mos_id, first_name, last_name, rank_now, mos_ethnicity) %>%
+  summarize(
+    total_allegations = n()
+  ) %>%
+  arrange(desc(total_allegations))
+
+```
+
+### Final Memo
+  Our group analyzed a ProPublica story headlined “Over a Dozen Black and Latino Men Accused a Cop of Humiliating, Invasive Strip Searches. The NYPD Kept Promoting Him.” During our analysis, we were able to uncover many interesting details about the dataset used in the story and the methods used by the reporters when reporting. The story shares information about Christopher McCormack, one of the highest ranking officers in the New York Police Department. In the first sentence we selected, we determined that the data had been since updated by ProPublica or the NYPD, leading to a slight skew in our numbers. Our research found that there were a total of 25 high-ranking officers with at least three misconduct allegations that were substantiated by the Civilian Complaint Review Board (CCRB), 17 of whom were white. Out of the 11 of the 25 officers who reached deputy inspector, only one was not White, contrary to the story. In the second sentence we selected, we determined that 81 of around 420 officers in the department who hold a rank above captain have had at least one misconduct allegation that was substantiated by the CCRB. For the third sentence, we used the data to determine that there are 29 total unsubstantiated allegations and 27 exonerated allegations against McCormack, confirming the story's findings. For the fourth sentence, we concluded that the majority of the city's 36,000 officers did not have any substantiated complaint against them -- 1 in 9 of the officers have at least one substantiated complaint on their record -- once again confirming the story’s findings. Finally, we were provided the fifth sentence from our professor, in which we found that McCormack was in fact a newsworthy individual. Overall, the story uncovered information about allegations made against police officers in New York City, and we both confirmed and denied information presented in the article due to the dataset being updated. 
+  Our group believes that this story is a great example of how data really fuels the reporting of an issue. Without combing through the records, there was likely no way that the reporters could have determined the number of allegations against Christopher McCormack. Combined with anecdotal evidence from 15 individuals willing to speak to what McCormack did during his time in the NYPD, the reporters were able to make a pretty strong case that McCormack clearly abused his authority as an officer. We believe that their approach was highly effective since it combines both traditional and data reporting to support anecdotal evidence from people who filed a complaint about McCormack. 
+	There are some moments in the story where paragraphs are just riddled with data and numbers, which can be overwhelming for some readers, especially in cases where there are many instances in one sentence; however, the strategy of weaving data into the story right after an anecdote was very effective and helped to communicate to readers just how large the magnitude of allegations were. 
+	Our group believes that the data was extremely easy to find, given that ProPublica not only made their data available to download but also created a separate online database that is easily understandable to the average reader. In that database, ProPublica mentions that the database was updated, which was good to know for our purposes. They also include an “About the Data” section at the end of the story describing how ProPublica obtained a larger set of records about McCormack in particular, which is why some values that they described in our story might differ from ours. 
+	ProPublica obtained CCRB data and built their database based on officers that had at least one substantiated claim; however, the data that was downloadable for us was the initial data received from the CCRB, which likely required more cleaning. For example, in the data we downloaded, Christopher McCormack’s name is spelled wrong, and we also needed to create a column that combined all of the different types of rankings above captain and the different types of substantiated versus unsubstantiated claims. 
+
+-30-
